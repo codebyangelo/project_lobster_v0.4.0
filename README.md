@@ -1,7 +1,7 @@
 # 🦞 Project Lobster v0.4.0
 ### "Hybrid-Tiered Agentic Immune System"
 
-**Engine:** Google Gemini 3.0 Flash Preview
+**Engine:** Google Gemini 3 Flash Preview
 **Interface:** Terminal User Interface (TUI) via `rich`
 **Status:** Hackathon Competitioner (Ready)
 
@@ -19,7 +19,7 @@ As the internet evolves from a network of humans to a network of **Autonomous AI
 ### 1. Hybrid Defense Architecture
 -   **Layer 0: Iron Dome/Green Dome (Local)**: Zero-latency Regex heuristics block known threats (`rm -rf`) and approve known safe patterns (`import math`) instantly.
 -   **Layer 1: The Vault (Cached Intelligence)**: A local database of previously analyzed threats prevents redundant API calls.
--   **Layer 2: AI Sentinel (Gemini 3.0)**: The "Brain". Analyzes novel, complex threats using the reasoning capabilities of Gemini 3.0 Flash.
+-   **Layer 2: AI Sentinel (Gemini 3 Flash Preview)**: The "Brain". Analyzes novel, complex threats using the reasoning capabilities of Gemini 3 Flash Preview.
 
 ### 2. Efficiency & Sustainability
 -   **Live Efficiency Monitor**: The dashboard tracks `API Calls` vs. `Local Blocks` in real-time.
@@ -69,7 +69,7 @@ python3 dashboard.py
 
 ## 🏆 Hackathon Tech Stack
 
--   **Model**: `gemini-3.0-flash-preview`
+-   **Model**: `gemini-3-flash-preview`
 -   **Reasoning**: Uses Gemini's large context window to correlate events across the packet stream.
 -   **Interface**: Built with `rich` for a "Cybersecurity Operation Center" aesthetic.
 
