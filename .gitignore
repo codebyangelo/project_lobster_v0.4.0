@@ -1,0 +1,20 @@
+# Sensitive
+.env
+
+# Environment
+venv/
+__pycache__/
+*.pyc
+
+# Logs & Reports (Backups)
+scan_log_*.json
+scan_report_*.html
+
+# Documentation (Requested Exclusion)
+docs/
+
+# Temporary Verification Scripts
+verify_*.py
+
+# System
+.DS_Store

