@@ -76,7 +76,7 @@ python3 dashboard.py
 ---
 *Project Lobster - Securing the Agentic Web*
 
- Copyright 2026 [Angelo Ayton]
+## Copyright 2026 [Angelo Ayton]
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
