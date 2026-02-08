@@ -14,7 +14,7 @@ As the internet evolves from a network of humans to a network of **Autonomous AI
 
 ---
 
-## 🚀 Key Features (Winner Demo)
+## 🚀 Key Features
 
 ### 1. Hybrid Defense Architecture
 -   **Layer 0: Iron Dome/Green Dome (Local)**: Zero-latency Regex heuristics block known threats (`rm -rf`) and approve known safe patterns (`import math`) instantly.
