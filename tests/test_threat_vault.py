@@ -4,7 +4,7 @@ import sys
 import json
 from unittest.mock import patch, mock_open
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
     from src.core import load_threats, scan_packet, KNOWN_THREATS

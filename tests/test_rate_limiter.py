@@ -5,7 +5,7 @@ import os
 import sys
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.core import RateLimiter, scan_packet, limiter
 
