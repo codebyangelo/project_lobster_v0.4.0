@@ -23,6 +23,16 @@ except ImportError:
 
 class TestPerformanceBenchmarks(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.metrics = {}
+
+    @classmethod
+    def tearDownClass(cls):
+        import json
+        with open("performance_metrics.json", "w") as f:
+            json.dump(cls.metrics, f, indent=2)
+
     def setUp(self):
         RUNTIME_CACHE.clear()
         
@@ -35,6 +45,7 @@ class TestPerformanceBenchmarks(unittest.TestCase):
         end_time = time.perf_counter()
         
         latency_ms = (end_time - start_time) * 1000
+        self.__class__.metrics["iron_dome_ms"] = round(latency_ms, 3)
         
         # We expect regex to parse this in under 10ms (generous ceiling for CI environments)
         self.assertLess(latency_ms, 10.0, f"Iron Dome heuristic scan was too slow! Latency: {latency_ms:.2f}ms")
@@ -53,6 +64,7 @@ class TestPerformanceBenchmarks(unittest.TestCase):
         end_time = time.perf_counter()
         
         latency_ms = (end_time - start_time) * 1000
+        self.__class__.metrics["vault_ms"] = round(latency_ms, 3)
         
         # O(1) dictionary lookup should be virtually instantaneous (under 2ms)
         self.assertLess(latency_ms, 2.0, f"Vault lookup was too slow! Latency: {latency_ms:.2f}ms")
@@ -71,6 +83,7 @@ class TestPerformanceBenchmarks(unittest.TestCase):
         end_time = time.perf_counter()
         
         latency_ms = (end_time - start_time) * 1000
+        self.__class__.metrics["cache_ms"] = round(latency_ms, 3)
         
         # Cache hit should be under 2ms
         self.assertLess(latency_ms, 2.0, f"Cache lookup was too slow! Latency: {latency_ms:.2f}ms")
