@@ -16,7 +16,7 @@ Add this step to your `.github/workflows/python-app.yml` (or wherever your tests
         uses: Schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
-          gistID: YOUR_GIST_ID_HERE
+          gistID: 290c37849ba326c70233c878e2090b65
           filename: iron_dome_latency.json
           label: Iron Dome Latency
           message: ${{ fromJson(env.METRICS).iron_dome_ms }}ms
@@ -36,7 +36,7 @@ Add this step to your `.github/workflows/python-app.yml` (or wherever your tests
 Finally, add the Shields.io endpoints to the top of your `README.md`:
 
 ```markdown
-![Iron Dome Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/iron_dome_latency.json)
-![Vault Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/vault_latency.json)
-![Cache Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/YOUR_USERNAME/YOUR_GIST_ID/raw/cache_latency.json)
+![Iron Dome Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/iron_dome_latency.json)
+![Vault Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/vault_latency.json)
+![Cache Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/cache_latency.json)
 ```
