@@ -45,10 +45,11 @@ class TestErrorHandling(unittest.TestCase):
 
     def test_none_packet(self):
         # Test: packet = None
-        # Currently, the system raises an AttributeError because it expects a dictionary
-        # We document this behavior via test. If this needs to be graceful, the core code needs an update.
-        with self.assertRaises(AttributeError):
-            scan_packet(None)
+        # Verify that passing None returns a graceful clean/error dict response instead of raising AttributeError
+        result = scan_packet(None)
+        self.assertEqual(result["status"], "CLEAN")
+        self.assertEqual(result["analysis"], "Invalid packet: Received None.")
+        self.assertEqual(result["source"], "ERROR")
 
     @patch('src.core.client', new=None)
     def test_offline_mode(self):
