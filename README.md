@@ -21,7 +21,7 @@ As the internet evolves from a network of humans to a network of **Autonomous AI
 ## 🚀 Key Features
 
 ### 1. Hybrid Defense Architecture
--   **Layer 0: Iron Dome/Green Dome (Local)**: Zero-latency Regex heuristics block known threats (`rm -rf`) and approve known safe patterns (`import math`) instantly.
+-   **Layer 0: Iron Dome/Green Dome (Local)**: Effectively zero-latency local Regex heuristics block known threats (rm -rf) and approve known-safe patterns (import math) instantly, before invoking the AI layer.
 -   **Layer 1: The Vault (Cached Intelligence)**: A local database of previously analyzed threats prevents redundant API calls.
 -   **Layer 2: AI Sentinel (Gemini 3 Flash Preview)**: The "Brain". Analyzes novel, complex threats using the reasoning capabilities of Gemini 3 Flash Preview.
 
