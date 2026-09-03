@@ -86,6 +86,14 @@ def scan_packet(packet, context_history=None, use_llm=True):
     5. Gemini 3 Flash Preview (LLM) - Tier 3 (Rate Limited)
     """
     
+    # Check for invalid packet
+    if packet is None:
+        return {
+            "status": "CLEAN",
+            "analysis": "Invalid packet: Received None.",
+            "source": "ERROR"
+        }
+
     # 1. PASS-THROUGH (Text Only)
     if not packet.get('code_snippet'):
         return {
