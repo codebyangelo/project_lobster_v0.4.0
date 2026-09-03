@@ -71,16 +71,9 @@ python3 dashboard.py
 
 ---
 
-## 🏆 Hackathon Tech Stack
-
--   **Model**: `gemini-3-flash-preview`
--   **Reasoning**: Uses Gemini's large context window to correlate events across the packet stream.
--   **Interface**: Built with `rich` for a "Cybersecurity Operation Center" aesthetic.
-
----
 *Project Lobster - Securing the Agentic Web*
 
-## Copyright 2026 [Angelo Ayton]
+## Copyright 2026 Angelo Ayton
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
