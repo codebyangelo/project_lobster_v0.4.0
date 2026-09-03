@@ -50,6 +50,7 @@ jobs:
         valColorRange: ${{ fromJson(steps.read_metrics.outputs.metrics).iron_dome_ms }}
         maxColorRange: 5.0
         minColorRange: 0.1
+        invertColorRange: true
 
     - name: Generate Vault Badge
       uses: Schneegans/dynamic-badges-action@v1.7.0
@@ -62,6 +63,7 @@ jobs:
         valColorRange: ${{ fromJson(steps.read_metrics.outputs.metrics).vault_ms }}
         maxColorRange: 5.0
         minColorRange: 0.1
+        invertColorRange: true
 
     - name: Generate Cache Badge
       uses: Schneegans/dynamic-badges-action@v1.7.0
@@ -74,3 +76,4 @@ jobs:
         valColorRange: ${{ fromJson(steps.read_metrics.outputs.metrics).cache_ms }}
         maxColorRange: 5.0
         minColorRange: 0.1
+        invertColorRange: true
