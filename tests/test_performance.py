@@ -1,0 +1,81 @@
+import unittest
+import os
+import sys
+import time
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+try:
+    from src.core import scan_packet, KNOWN_THREATS, RUNTIME_CACHE
+    from src.iron_dome import IronDome
+except ImportError:
+    # Handle dependency mocking if needed
+    sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
+    import types
+    google_mod = types.ModuleType('google')
+    genai_mod = types.ModuleType('genai')
+    genai_mod.Client = lambda **kwargs: None
+    google_mod.genai = genai_mod
+    sys.modules['google'] = google_mod
+    sys.modules['google.genai'] = genai_mod
+    from src.core import scan_packet, KNOWN_THREATS, RUNTIME_CACHE
+    from src.iron_dome import IronDome
+
+class TestPerformanceBenchmarks(unittest.TestCase):
+
+    def setUp(self):
+        RUNTIME_CACHE.clear()
+        
+    def test_iron_dome_latency(self):
+        # Create a massive payload string
+        massive_payload = "print('hello world')\n" * 1000 + "rm -rf /\n" * 10
+        
+        start_time = time.perf_counter()
+        result = IronDome.scan(massive_payload)
+        end_time = time.perf_counter()
+        
+        latency_ms = (end_time - start_time) * 1000
+        
+        # We expect regex to parse this in under 10ms (generous ceiling for CI environments)
+        self.assertLess(latency_ms, 10.0, f"Iron Dome heuristic scan was too slow! Latency: {latency_ms:.2f}ms")
+        self.assertIsNotNone(result)
+
+    def test_vault_lookup_latency(self):
+        # Add 10,000 dummy threats to simulate a large vault
+        for i in range(10000):
+            KNOWN_THREATS[f"dummy_threat_{i}"] = {"status": "BLOCKED", "analysis": "Dummy"}
+            
+        KNOWN_THREATS["performance_test_threat"] = {"status": "BLOCKED", "analysis": "Target"}
+        packet = {"code_snippet": "performance_test_threat"}
+        
+        start_time = time.perf_counter()
+        result = scan_packet(packet, use_llm=False)
+        end_time = time.perf_counter()
+        
+        latency_ms = (end_time - start_time) * 1000
+        
+        # O(1) dictionary lookup should be virtually instantaneous (under 2ms)
+        self.assertLess(latency_ms, 2.0, f"Vault lookup was too slow! Latency: {latency_ms:.2f}ms")
+        self.assertEqual(result["source"], "VAULT")
+        
+        # Clean up
+        KNOWN_THREATS.clear()
+
+    def test_cache_lookup_latency(self):
+        # Inject target directly into Cache
+        RUNTIME_CACHE["performance_test_cache"] = {"status": "CLEAN", "analysis": "Target"}
+        packet = {"code_snippet": "performance_test_cache"}
+        
+        start_time = time.perf_counter()
+        result = scan_packet(packet, use_llm=True)
+        end_time = time.perf_counter()
+        
+        latency_ms = (end_time - start_time) * 1000
+        
+        # Cache hit should be under 2ms
+        self.assertLess(latency_ms, 2.0, f"Cache lookup was too slow! Latency: {latency_ms:.2f}ms")
+        self.assertEqual(result["source"], "CACHE")
+
+
+if __name__ == '__main__':
+    unittest.main()
