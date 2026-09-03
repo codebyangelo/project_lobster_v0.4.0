@@ -8,7 +8,6 @@
 
 **Engine:** Google Gemini 3 Flash Preview
 **Interface:** Terminal User Interface (TUI) via `rich`
-**Status:** Hackathon Competitioner (Ready)
 
 ---
 
