@@ -3,7 +3,7 @@ import os
 import sys
 from unittest.mock import patch, MagicMock
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Ensure dotenv and rich don't crash the import if missing locally
 try:

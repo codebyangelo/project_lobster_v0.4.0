@@ -4,7 +4,7 @@ import sys
 from unittest.mock import patch, MagicMock
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # We need to mock the google.genai and dotenv imports if they are not installed in the test environment,
 # just in case, but since we are unit testing the logic, we will definitely mock the API call itself.

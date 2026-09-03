@@ -4,7 +4,7 @@ import sys
 from unittest.mock import patch
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
     from src.core import scan_packet
