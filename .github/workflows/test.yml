@@ -28,4 +28,49 @@ jobs:
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
-        python -m unittest discover -p "test_*.py"
+        python -m unittest discover tests -p "test_*.py"
+
+    - name: Read Performance Metrics
+      id: read_metrics
+      run: |
+        # Read the JSON file outputted by test_performance.py
+        content=$(cat performance_metrics.json)
+        echo "metrics<<EOF" >> $GITHUB_OUTPUT
+        echo "$content" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Generate Iron Dome Badge
+      uses: Schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 290c37849ba326c70233c878e2090b65
+        filename: iron_dome_latency.json
+        label: Iron Dome Latency
+        message: ${{ fromJson(steps.read_metrics.outputs.metrics).iron_dome_ms }}ms
+        valColorRange: ${{ fromJson(steps.read_metrics.outputs.metrics).iron_dome_ms }}
+        maxColorRange: 5.0
+        minColorRange: 0.1
+
+    - name: Generate Vault Badge
+      uses: Schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 290c37849ba326c70233c878e2090b65
+        filename: vault_latency.json
+        label: Vault Latency
+        message: ${{ fromJson(steps.read_metrics.outputs.metrics).vault_ms }}ms
+        valColorRange: ${{ fromJson(steps.read_metrics.outputs.metrics).vault_ms }}
+        maxColorRange: 5.0
+        minColorRange: 0.1
+
+    - name: Generate Cache Badge
+      uses: Schneegans/dynamic-badges-action@v1.7.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 290c37849ba326c70233c878e2090b65
+        filename: cache_latency.json
+        label: Cache Latency
+        message: ${{ fromJson(steps.read_metrics.outputs.metrics).cache_ms }}ms
+        valColorRange: ${{ fromJson(steps.read_metrics.outputs.metrics).cache_ms }}
+        maxColorRange: 5.0
+        minColorRange: 0.1
