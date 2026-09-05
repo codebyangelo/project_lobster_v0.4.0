@@ -44,9 +44,7 @@ class TestCore(unittest.TestCase):
         if not client:
             self.assertEqual(result["status"], "ERROR")
             self.assertEqual(result["source"], "OFFLINE")
-            self.assertIn("bad_cache_payload", RUNTIME_CACHE)
-            self.assertEqual(RUNTIME_CACHE["bad_cache_payload"]["source"], "OFFLINE")
-            self.assertEqual(RUNTIME_CACHE["bad_cache_payload"]["status"], result["status"])
+            self.assertNotIn("bad_cache_payload", RUNTIME_CACHE)
         else:
             self.assertIn(result["status"], ["ALLOW", "BLOCK", "ERROR"], f"Expected ALLOW or BLOCK but got {result['status']}. Full result: {result}")
             self.assertEqual(result["source"], "GEMINI_API", f"Expected GEMINI_API but got {result['source']}. Full result: {result}")
