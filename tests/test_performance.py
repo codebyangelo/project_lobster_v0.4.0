@@ -3,11 +3,10 @@ import os
 import sys
 import time
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from src.core import scan_packet, KNOWN_THREATS, RUNTIME_CACHE
-    from src.iron_dome import IronDome
+    from lobster.core import scan_packet, KNOWN_THREATS, RUNTIME_CACHE
+    from lobster.iron_dome import IronDome
 except ImportError:
     # Handle dependency mocking if needed
     sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
@@ -18,8 +17,8 @@ except ImportError:
     google_mod.genai = genai_mod
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
-    from src.core import scan_packet, KNOWN_THREATS, RUNTIME_CACHE
-    from src.iron_dome import IronDome
+    from lobster.core import scan_packet, KNOWN_THREATS, RUNTIME_CACHE
+    from lobster.iron_dome import IronDome
 
 class TestPerformanceBenchmarks(unittest.TestCase):
 

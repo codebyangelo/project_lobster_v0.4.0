@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-lobster"
+version = "0.4.0"
+authors = [
+  { name="Angelo Ayton" },
+]
+description = "Hybrid local heuristics + cached intelligence + AI escalation security boundary"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai",
+    "python-dotenv",
+    "rich"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+lobster = "lobster.cli:run"
+
+[tool.setuptools]
+packages = ["lobster"]

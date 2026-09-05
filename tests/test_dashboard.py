@@ -3,7 +3,6 @@ import os
 import sys
 from unittest.mock import patch, MagicMock
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Ensure dotenv and rich don't crash the import if missing locally
 try:
@@ -32,7 +31,7 @@ except ImportError:
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
 
-import dashboard
+import lobster.cli as dashboard
 
 class TestDashboardReporting(unittest.TestCase):
 
@@ -62,7 +61,7 @@ class TestDashboardReporting(unittest.TestCase):
         
         # We patch builtins.open to catch the JSON write, and Console to catch HTML generation
         with patch('builtins.open', unittest.mock.mock_open()) as mock_file, \
-             patch('dashboard.Console') as mock_console_class:
+             patch('lobster.cli.Console') as mock_console_class:
             
             generated_filename = dashboard.export_report(buffer, dummy_console)
             

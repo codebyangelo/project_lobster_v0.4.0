@@ -3,9 +3,8 @@ import os
 import sys
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.core import scan_packet, KNOWN_THREATS
+from lobster.core import scan_packet, KNOWN_THREATS
 
 class TestCore(unittest.TestCase):
     def test_text_only_packet(self):

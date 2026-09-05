@@ -4,11 +4,10 @@ import sys
 from unittest.mock import patch, MagicMock
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Safe imports to handle missing dependencies in local dev environments
 try:
-    from src.core import scan_packet, client, RUNTIME_CACHE, limiter
+    from lobster.core import scan_packet, client, RUNTIME_CACHE, limiter
 except ImportError:
     sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
     import types
@@ -18,7 +17,7 @@ except ImportError:
     google_mod.genai = genai_mod
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
-    from src.core import scan_packet, client, RUNTIME_CACHE, limiter
+    from lobster.core import scan_packet, client, RUNTIME_CACHE, limiter
 
 class TestGeminiAPI(unittest.TestCase):
     
@@ -27,7 +26,7 @@ class TestGeminiAPI(unittest.TestCase):
         RUNTIME_CACHE.clear()
         limiter.tokens = limiter.rate
 
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_api_timeout_fallback(self, mock_client):
         # Simulate a network timeout or API failure
         mock_client.__bool__.return_value = True  # Bypass the offline check
@@ -41,7 +40,7 @@ class TestGeminiAPI(unittest.TestCase):
         self.assertIn("FAIL-SAFE ACTIVATED", result["analysis"])
         self.assertIn("503 Service Unavailable", result["analysis"])
 
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_reasoning_parsing_logic(self, mock_client):
         # Test that the system correctly extracts the reasoning even if the AI gets chatty
         mock_client.__bool__.return_value = True

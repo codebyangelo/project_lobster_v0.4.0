@@ -4,12 +4,11 @@ import sys
 from unittest.mock import patch, MagicMock
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # We need to mock the google.genai and dotenv imports if they are not installed in the test environment,
 # just in case, but since we are unit testing the logic, we will definitely mock the API call itself.
 try:
-    from src.core import scan_packet
+    from lobster.core import scan_packet
 except ImportError:
     # If imports fail due to missing dotenv/google (like in our previous run), we apply the same safe mock
     sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
@@ -20,16 +19,16 @@ except ImportError:
     google_mod.genai = genai_mod
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
-    from src.core import scan_packet
+    from lobster.core import scan_packet
 
 class TestContextAwareDetection(unittest.TestCase):
     
     def setUp(self):
-        from src.core import RUNTIME_CACHE, limiter
+        from lobster.core import RUNTIME_CACHE, limiter
         RUNTIME_CACHE.clear()
         limiter.tokens = limiter.rate
 
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_context_aware_attack_detection(self, mock_client):
         # We need to test that providing context history successfully influences the AI's decision.
         # We will mock the AI to behave exactly as a trained security model would.
@@ -60,7 +59,7 @@ class TestContextAwareDetection(unittest.TestCase):
         self.assertIn("SELECT * FROM passwords", prompt_used)
         self.assertIn("PREVIOUS CONTEXT", prompt_used)
         
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_benign_packet_in_isolation(self, mock_client):
         # Ensure that the same packet without the malicious context is allowed
         # Setup the mock API response for a CLEAN verdict

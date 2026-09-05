@@ -16,7 +16,7 @@ import os
 import time
 from dotenv import load_dotenv
 from google import genai
-from src.iron_dome import IronDome
+from lobster.iron_dome import IronDome
 
 # Load Environment
 load_dotenv()

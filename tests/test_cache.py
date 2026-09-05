@@ -3,10 +3,9 @@ import os
 import sys
 from unittest.mock import patch, MagicMock
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from src.core import scan_packet, RUNTIME_CACHE, limiter
+    from lobster.core import scan_packet, RUNTIME_CACHE, limiter
 except ImportError:
     sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
     import types
@@ -16,7 +15,7 @@ except ImportError:
     google_mod.genai = genai_mod
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
-    from src.core import scan_packet, RUNTIME_CACHE, limiter
+    from lobster.core import scan_packet, RUNTIME_CACHE, limiter
 
 class TestCacheManagement(unittest.TestCase):
 
@@ -25,7 +24,7 @@ class TestCacheManagement(unittest.TestCase):
         RUNTIME_CACHE.clear()
         limiter.tokens = limiter.rate
 
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_cache_hit_bypasses_api(self, mock_client):
         # Setup mock API to return a CLEAN verdict
         mock_response = MagicMock()
@@ -50,7 +49,7 @@ class TestCacheManagement(unittest.TestCase):
         # Verify the status remains the same
         self.assertEqual(result1["status"], result2["status"])
 
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_cache_miss_on_different_payload(self, mock_client):
         # Setup mock API
         mock_response = MagicMock()
