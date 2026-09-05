@@ -24,22 +24,22 @@ class TestDataIntegrity(unittest.TestCase):
         
     def test_vault_deep_copy(self):
         # Setup Vault Threat
-        KNOWN_THREATS["test_copy_threat"] = {"status": "BLOCKED", "analysis": "Initial"}
+        KNOWN_THREATS["test_copy_threat"] = {"status": "BLOCK", "analysis": "Initial"}
         packet = {"code_snippet": "test_copy_threat"}
         
         # Scan packet, which pulls from the Vault
-        result1 = scan_packet(packet, use_llm=False)
+        result1 = scan_packet(packet)
         
         # Mutate the result
         result1["analysis"] = "Mutated Analysis!"
-        result1["status"] = "CLEAN"
+        result1["status"] = "ALLOW"
         result1["new_injected_key"] = "HACKED"
         
         # Pull from the Vault again
-        result2 = scan_packet(packet, use_llm=False)
+        result2 = scan_packet(packet)
         
         # Assert the second pull was NOT affected by the mutation of the first
-        self.assertEqual(result2["status"], "BLOCKED")
+        self.assertEqual(result2["status"], "BLOCK")
         self.assertEqual(result2["analysis"], "Initial")
         self.assertNotIn("new_injected_key", result2)
         
@@ -48,22 +48,22 @@ class TestDataIntegrity(unittest.TestCase):
 
     def test_cache_deep_copy(self):
         # Inject directly into Cache
-        RUNTIME_CACHE["test_cache_payload"] = {"status": "CLEAN", "analysis": "Initial"}
+        RUNTIME_CACHE["test_cache_payload"] = {"status": "ALLOW", "analysis": "Initial"}
         packet = {"code_snippet": "test_cache_payload"}
         
         # Scan packet, which pulls from the Cache
-        result1 = scan_packet(packet, use_llm=True)
+        result1 = scan_packet(packet)
         
         # Mutate the result
         result1["analysis"] = "Mutated Analysis!"
-        result1["status"] = "BLOCKED"
+        result1["status"] = "BLOCK"
         result1["new_injected_key"] = "HACKED"
         
         # Pull from the Cache again
-        result2 = scan_packet(packet, use_llm=True)
+        result2 = scan_packet(packet)
         
         # Assert the second pull was NOT affected by the mutation of the first
-        self.assertEqual(result2["status"], "CLEAN")
+        self.assertEqual(result2["status"], "ALLOW")
         self.assertEqual(result2["analysis"], "Initial")
         self.assertNotIn("new_injected_key", result2)
         

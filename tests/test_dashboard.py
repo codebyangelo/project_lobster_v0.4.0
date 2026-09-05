@@ -43,7 +43,7 @@ class TestDashboardReporting(unittest.TestCase):
                 "agent_id": "test-agent",
                 "type": "TestVector",
                 "scan_result": {
-                    "status": "BLOCKED", 
+                    "status": "BLOCK", 
                     "analysis": "Simulated malicious payload."
                 }
             },
@@ -51,7 +51,7 @@ class TestDashboardReporting(unittest.TestCase):
                 "timestamp": "2026-09-03T12:00:01Z",
                 "agent_id": "test-agent",
                 "scan_result": {
-                    "status": "CLEAN", 
+                    "status": "ALLOW", 
                     "analysis": "Simulated safe payload."
                 }
             }
@@ -75,7 +75,7 @@ class TestDashboardReporting(unittest.TestCase):
             # Verify json.dump was called correctly (the mock_file captures the file handle operations)
             written_data = "".join(call.args[0] for call in mock_file().write.call_args_list)
             self.assertIn("Simulated malicious payload.", written_data)
-            self.assertIn("BLOCKED", written_data)
+            self.assertIn("BLOCK", written_data)
             
             # 2. Verify HTML Export Behavior
             self.assertTrue(generated_filename.startswith("scan_report_"))

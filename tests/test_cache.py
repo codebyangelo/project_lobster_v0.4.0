@@ -35,12 +35,12 @@ class TestCacheManagement(unittest.TestCase):
         packet = {"code_snippet": "unique_uncached_function()"}
 
         # First scan should hit the LLM API
-        result1 = scan_packet(packet, use_llm=True)
+        result1 = scan_packet(packet)
         self.assertEqual(result1["source"], "GEMINI_API")
         self.assertEqual(mock_client.models.generate_content.call_count, 1)
 
         # Second scan with the EXACT same code should hit the cache
-        result2 = scan_packet(packet, use_llm=True)
+        result2 = scan_packet(packet)
         self.assertEqual(result2["source"], "CACHE")
         
         # Verify the API was NOT called a second time
@@ -61,11 +61,11 @@ class TestCacheManagement(unittest.TestCase):
         packet2 = {"code_snippet": "function_two()"}
 
         # Scan first payload
-        res1 = scan_packet(packet1, use_llm=True)
+        res1 = scan_packet(packet1)
         self.assertEqual(res1["source"], "GEMINI_API")
         
         # Scan second payload (different code)
-        res2 = scan_packet(packet2, use_llm=True)
+        res2 = scan_packet(packet2)
         self.assertEqual(res2["source"], "GEMINI_API")
         
         # API should have been called twice

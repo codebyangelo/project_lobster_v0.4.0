@@ -96,9 +96,9 @@ def export_report(buffer, console):
         result = p.get('scan_result', {})
         status = result.get('status', 'UNKNOWN')
         
-        status_text = Text("CLEAN", style="green")
-        if status == "BLOCKED":
-            status_text = Text("BLOCKED", style="bold red reverse")
+        status_text = Text("ALLOW", style="green")
+        if status == "BLOCK":
+            status_text = Text("BLOCK", style="bold red reverse")
         elif status == "API_ERROR":
             status_text = Text("⚠ API FAIL", style="bold yellow reverse")
         elif status == "ERROR":
@@ -166,11 +166,11 @@ def render_traffic(packets, selected_index=None):
         status_style, status_text = "dim yellow", "PENDING"
         if p.get('scanned') and 'scan_result' in p:
             result = p['scan_result']
-            if result.get('status') == "BLOCKED":
+            if result.get('status') == "BLOCK":
                 status_style, status_text = "bold red reverse", "⚠ BLOCKED"
             elif result.get('status') == "API_ERROR":
                 status_style, status_text = "bold yellow reverse", "⚡ API DOWN"
-            elif result.get('status') == "CLEAN":
+            elif result.get('status') == "ALLOW":
                 status_style, status_text = "green", "✔ CLEAN"
             else:
                 status_style, status_text = "red", "ERROR"
@@ -182,13 +182,13 @@ def render_traffic(packets, selected_index=None):
     return Panel(table, title=title, border_style="blue")
 
 def render_alert(packet):
-    if not packet or packet.get('scan_result', {}).get('status') == "CLEAN":
+    if not packet or packet.get('scan_result', {}).get('status') == "ALLOW":
         if packet and packet.get('code_snippet') and packet.get('scanned'): pass 
         else:
             return Panel(Text("\n\nSYSTEM SECURE\nActive Monitoring: ON", justify="center", style="dim green"), title="🛡️ FORENSIC DETAIL", border_style="green")
     
     grid = Table.grid(expand=True)
-    is_blocked = packet.get('scan_result', {}).get('status') == "BLOCKED"
+    is_blocked = packet.get('scan_result', {}).get('status') == "BLOCK"
     header_color = "red" if is_blocked else "green"
     header_title = "MALICIOUS PACKET INTERCEPTED" if is_blocked else "CODE PACKET ANALYZED"
     
@@ -250,7 +250,7 @@ def run():
                         if key.lower() == 's': started = True
                         elif key.lower() == 'q': return
                         elif key.lower() == 'a': 
-                            ai_active = not ai_active
+                            pass
                             layout["footer"].update(render_footer("Status: STANDBY | Waiting for Command...", stats=stats, ai_active=ai_active))
                     time.sleep(0.05)
 
@@ -264,7 +264,7 @@ def run():
                              layout["footer"].update(render_footer(f"REPORT SAVED: {fname}", ai_active=ai_active, style="bold green"))
                              time.sleep(1.5)
                         if key.lower() == 'a':
-                             ai_active = not ai_active
+                             pass
                              layout["footer"].update(render_footer(f"RUNNING | Packet {i+1}/{len(data)} | [SPACE] Pause [Q] Cancel", stats=stats, ai_active=ai_active))
                         if key == ' ': paused = not paused
 
@@ -278,7 +278,7 @@ def run():
                             elif p_key == 'r': break 
                             elif p_key == 'q': sim_complete = True; paused = False; break
                             elif p_key.lower() == 'a':
-                                 ai_active = not ai_active
+                                 pass
                                  layout["footer"].update(render_footer("PAUSED ([SPACE] Resume | [R] Restart | [E] Export | [A] Toggle AI)", stats=stats, ai_active=ai_active, style="bold yellow"))
                             elif p_key.lower() == 'e':
                                  fname = export_report(buffer, console)
@@ -306,7 +306,7 @@ def run():
                     # buffer[:-1] gets all previous packets. [-3:] gets the last 3 of those.
                     context_history = buffer[:-1][-3:] if len(buffer) > 1 else []
                     
-                    result = scan_packet(packet, context_history=context_history, use_llm=ai_active)
+                    result = scan_packet(packet, context_history=context_history)
                     
                     # Update Stats
                     src = result.get('source', 'UNKNOWN')
@@ -320,7 +320,7 @@ def run():
                     packet['scanned'] = True
                     layout["body"]["traffic"].update(render_traffic(buffer))
                     
-                    if result.get('status') == "BLOCKED":
+                    if result.get('status') == "BLOCK":
                         layout["body"]["alert"].update(render_alert(packet))
                         for _ in range(40):
                             if kb.get_key(): break 
