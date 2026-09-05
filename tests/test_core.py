@@ -40,8 +40,8 @@ class TestCore(unittest.TestCase):
         # When scan_packet hits it, it should delete it from cache and proceed to API fallback.
         # Since we are testing against the real API, we just check that it reached the API layer.
         result = scan_packet({"code_snippet": "bad_cache_payload"})
-        self.assertIn(result["status"], ["ALLOW", "BLOCK"])
-        self.assertEqual(result["source"], "GEMINI_API")
+        self.assertIn(result["status"], ["ALLOW", "BLOCK"], f"Expected ALLOW or BLOCK but got {result['status']}. Full result: {result}")
+        self.assertEqual(result["source"], "GEMINI_API", f"Expected GEMINI_API but got {result['source']}. Full result: {result}")
         
         # Verify it was purged from the cache, but then repopulated with the fresh API result!
         # This proves the cache self-healed.

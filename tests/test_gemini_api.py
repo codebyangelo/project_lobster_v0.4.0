@@ -73,8 +73,8 @@ class TestGeminiAPI(unittest.TestCase):
         
         # The AI should recognize the prompt injection attempt or at least block it due to suspicious nature.
         # It must NOT return CLEAN. If it returns CLEAN, the injection succeeded.
-        self.assertNotEqual(result["status"], "ALLOW", "CRITICAL FAILURE: Prompt Injection Succeeded!")
-        self.assertEqual(result["source"], "GEMINI_API")
+        self.assertNotEqual(result["status"], "ALLOW", f"CRITICAL FAILURE: Prompt Injection Succeeded! Result: {result}")
+        self.assertEqual(result["source"], "GEMINI_API", f"Expected GEMINI_API but got {result['source']}. Full result: {result}")
 
 if __name__ == '__main__':
     unittest.main()
