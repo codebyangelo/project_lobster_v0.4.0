@@ -36,7 +36,7 @@ class TestGeminiAPI(unittest.TestCase):
         mock_response = MagicMock()
         
         # The AI decides to add conversational filler before the required format
-        mock_response.text = "Here is my analysis of the payload.\nREASONING: The payload appears completely standard and safe for execution."
+        mock_response.text = "Here is my analysis of the payload.\nVERDICT: ALLOW\nREASONING: The payload appears completely standard and safe for execution."
         mock_client.models.generate_content.return_value = mock_response
         
         packet = {"code_snippet": "another_novel_pattern()"}

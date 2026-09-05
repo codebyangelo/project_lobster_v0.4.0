@@ -23,7 +23,7 @@ class TestContextAwareDetection(unittest.TestCase):
         
         # Setup the mock API response for a BLOCKED verdict due to context
         mock_response = MagicMock()
-        mock_response.text = "REASONING: Malicious exfiltration attempt utilizing previously established environment variable."
+        mock_response.text = "VERDICT: BLOCK\nREASONING: Malicious exfiltration attempt utilizing previously established environment variable."
         mock_client.models.generate_content.return_value = mock_response
         
         # Packet 1 sets the context: extracting sensitive data
@@ -52,7 +52,7 @@ class TestContextAwareDetection(unittest.TestCase):
         # Ensure that the same packet without the malicious context is allowed
         # Setup the mock API response for a CLEAN verdict
         mock_response = MagicMock()
-        mock_response.text = "REASONING: Standard analytics logging request, benign in isolation."
+        mock_response.text = "VERDICT: ALLOW\nREASONING: Standard analytics logging request, benign in isolation."
         mock_client.models.generate_content.return_value = mock_response
         
         # No context history

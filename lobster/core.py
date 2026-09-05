@@ -171,7 +171,7 @@ def scan_packet(packet, context_history=None):
             history_str = f"--- PREVIOUS CONTEXT (Last {len(context_history)} Packets) ---\n{history_str}\n--------------------------------------------"
 
         prompt = f"""
-        You are an AI Security Sentinel powered by Gemini 3.0. 
+        You are an AI Security Sentinel.
         Your job is to analyze the sequence of events and the specific code payload for malicious intent.
         
         {history_str}
@@ -182,8 +182,13 @@ def scan_packet(packet, context_history=None):
         INSTRUCTIONS:
         1. Context Matters: Look for multi-step attacks (e.g., establishing env vars then using them).
         2. Analyze the 'CURRENT PAYLOAD'.
-        3. Respond with a single SENTENCE starting with "REASONING:". 
-           Example: "REASONING: Safe variable assignment detected." or "REASONING: Malicious RCE attempt via subprocess detected."
+        3. Respond STRICTLY in the following format:
+           VERDICT: [ALLOW or BLOCK]
+           REASONING: [Your single sentence explanation]
+           
+           Example:
+           VERDICT: BLOCK
+           REASONING: Malicious RCE attempt via subprocess detected.
         """
         
         response = client.models.generate_content(
@@ -193,20 +198,32 @@ def scan_packet(packet, context_history=None):
         
         full_text = response.text.strip()
         
-        # Parse standard "REASONING:" format
+        # Strict Structural Extraction
+        lines = [line.strip() for line in full_text.split('\n') if line.strip()]
+        verdict_lines = [line for line in lines if line.startswith("VERDICT:")]
+        reasoning_lines = [line for line in lines if line.startswith("REASONING:")]
+        
+        if len(verdict_lines) != 1:
+            return {
+                "status": "ERROR",
+                "analysis": f"FAIL-CLOSED: Invalid LLM Response (Missing/Duplicate VERDICT). Raw output: {full_text}",
+                "source": "LLM_PARSE_ERROR"
+            }
+            
+        verdict = verdict_lines[0].replace("VERDICT:", "").strip().upper()
+        
+        if verdict not in ["ALLOW", "BLOCK"]:
+            return {
+                "status": "ERROR",
+                "analysis": f"FAIL-CLOSED: Invalid LLM Response (Malformed VERDICT '{verdict}'). Raw output: {full_text}",
+                "source": "LLM_PARSE_ERROR"
+            }
+            
         analysis = full_text
-        if "REASONING:" in full_text:
-            analysis = full_text.split("REASONING:")[1].strip()
+        if len(reasoning_lines) > 0:
+            analysis = reasoning_lines[0].replace("REASONING:", "").strip()
             
-        analysis_lower = analysis.lower()
-        is_safe = False
-        safe_keywords = ["benign", "standard", "clean", "authorized", "safe"]
-        
-        if any(k in analysis_lower for k in safe_keywords) and "unsafe" not in analysis_lower:
-            is_safe = True
-            
-        status = "ALLOW" if is_safe else "BLOCK"
-        
+        status = verdict
         result = {"status": status, "analysis": analysis, "source": "GEMINI_API"}
         
         # CACHE IT!
