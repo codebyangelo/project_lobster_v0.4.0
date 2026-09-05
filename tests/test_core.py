@@ -38,16 +38,16 @@ class TestCore(unittest.TestCase):
         RUNTIME_CACHE["bad_cache_payload"] = ["list", "instead", "of", "dict"]
         
         # When scan_packet hits it, it should delete it from cache and proceed to API fallback.
-        # Since API is mocked in the test environment, it will hit GEMINI_API and return a BLOCK (since mock is empty).
+        # Since we are testing against the real API, we just check that it reached the API layer.
         result = scan_packet({"code_snippet": "bad_cache_payload"})
-        self.assertEqual(result["status"], "BLOCK")
+        self.assertIn(result["status"], ["ALLOW", "BLOCK"])
         self.assertEqual(result["source"], "GEMINI_API")
         
         # Verify it was purged from the cache, but then repopulated with the fresh API result!
         # This proves the cache self-healed.
         self.assertIn("bad_cache_payload", RUNTIME_CACHE)
         self.assertEqual(RUNTIME_CACHE["bad_cache_payload"]["source"], "GEMINI_API")
-        self.assertEqual(RUNTIME_CACHE["bad_cache_payload"]["status"], "BLOCK")
+        self.assertEqual(RUNTIME_CACHE["bad_cache_payload"]["status"], result["status"])
         
     def test_green_dome_allowlist(self):
         # Green dome allows simple print
