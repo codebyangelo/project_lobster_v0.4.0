@@ -50,17 +50,16 @@ As the internet evolves from a network of humans to a network of **Autonomous AI
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install .
 ```
-*(Dependencies: `google-genai`, `rich`, `python-dotenv`)*
+*(Dependencies like `google-genai` and `rich` are automatically handled)*
 
 ### Running the Demo
-```bash
-# Activate venv if not active
-source venv/bin/activate
+Since Project Lobster is now a standard Python package, it installs a global command line tool:
 
+```bash
 # Launch the Dashboard
-python3 dashboard.py
+lobster
 ```
 
 ### Controls
