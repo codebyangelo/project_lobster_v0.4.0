@@ -107,14 +107,14 @@ def scan_packet(packet, context_history=None, use_llm=True):
     
     
     # 0. IRON DOME (Local Heuristics - Tier 0)
-    # 0ms Latency. Blocks known high-risk commands instantly.
+    # Effectively 0ms Latency. Blocks known high-risk commands instantly.
     heuristic_verdict = IronDome.scan(code)
     if heuristic_verdict:
         heuristic_verdict["source"] = "IRON_DOME"
         return heuristic_verdict
 
     # 0.5. GREEN DOME (Local Allowlist - Tier 0.5)
-    # 0ms Latency. Allows known safe patterns to save API tokens.
+    # Effectively 0ms Latency. Allows known safe patterns to save API tokens.
     green_verdict = IronDome.scan_allowlist(code)
     if green_verdict:
         green_verdict["source"] = "GREEN_DOME"
