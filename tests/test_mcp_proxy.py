@@ -66,22 +66,39 @@ class TestMCPProxy(unittest.TestCase):
         self.assertIn("IRON DOME", text)
 
     def test_allow_safe_tool_call(self):
-        # Green dome allows simple print
+        # A payload that is trivially safe
         req = {
-            "jsonrpc": "2.0", 
-            "id": 3, 
-            "method": "tools/call", 
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "tools/call",
             "params": {
-                "name": "bash", 
+                "name": "run_command",
                 "arguments": {"command": "print('hello')"}
             }
         }
         resp = self.send_req(req)
         self.assertIsNotNone(resp)
-        # Should pass through to the dummy server which returns success
+        # Should NOT return an MCP error result, but rather the dummy server's normal output
+        self.assertEqual(resp.get("id"), 3)
         self.assertFalse(resp.get("result", {}).get("isError"))
         text = resp["result"]["content"][0]["text"]
         self.assertEqual(text, "TOOL EXECUTED SUCCESSFULLY")
+
+    def test_block_malformed_json(self):
+        # Send raw garbage that isn't JSON
+        self.proc.stdin.write("{{bad_json_garbage\n")
+        self.proc.stdin.flush()
+        
+        # Read the response
+        resp_line = self.proc.stdout.readline()
+        self.assertTrue(resp_line, "Expected a JSON-RPC error response, but got empty string")
+        
+        import json
+        resp = json.loads(resp_line.strip())
+        
+        # Should be a standard JSON-RPC 2.0 Parse error
+        self.assertEqual(resp.get("error", {}).get("code"), -32700)
+        self.assertIsNone(resp.get("id"))
 
 if __name__ == '__main__':
     unittest.main()

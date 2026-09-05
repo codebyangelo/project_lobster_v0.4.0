@@ -7,19 +7,7 @@ from unittest.mock import patch, MagicMock
 
 # We need to mock the google.genai and dotenv imports if they are not installed in the test environment,
 # just in case, but since we are unit testing the logic, we will definitely mock the API call itself.
-try:
-    from lobster.core import scan_packet
-except ImportError:
-    # If imports fail due to missing dotenv/google (like in our previous run), we apply the same safe mock
-    sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
-    import types
-    google_mod = types.ModuleType('google')
-    genai_mod = types.ModuleType('genai')
-    genai_mod.Client = lambda **kwargs: MagicMock()
-    google_mod.genai = genai_mod
-    sys.modules['google'] = google_mod
-    sys.modules['google.genai'] = genai_mod
-    from lobster.core import scan_packet
+from lobster.core import scan_packet
 
 class TestContextAwareDetection(unittest.TestCase):
     
@@ -35,7 +23,7 @@ class TestContextAwareDetection(unittest.TestCase):
         
         # Setup the mock API response for a BLOCKED verdict due to context
         mock_response = MagicMock()
-        mock_response.text = "REASONING: Malicious exfiltration attempt utilizing previously established environment variable."
+        mock_response.text = "VERDICT: BLOCK\nREASONING: Malicious exfiltration attempt utilizing previously established environment variable."
         mock_client.models.generate_content.return_value = mock_response
         
         # Packet 1 sets the context: extracting sensitive data
@@ -64,7 +52,7 @@ class TestContextAwareDetection(unittest.TestCase):
         # Ensure that the same packet without the malicious context is allowed
         # Setup the mock API response for a CLEAN verdict
         mock_response = MagicMock()
-        mock_response.text = "REASONING: Standard analytics logging request, benign in isolation."
+        mock_response.text = "VERDICT: ALLOW\nREASONING: Standard analytics logging request, benign in isolation."
         mock_client.models.generate_content.return_value = mock_response
         
         # No context history

@@ -1,16 +1,4 @@
 import sys
-sys.modules["dotenv"] = type("dummy", (), {"load_dotenv": lambda: None})
-import types
-google_mod = types.ModuleType("google")
-genai_mod = types.ModuleType("genai")
-class MockClient:
-    class MockModels:
-        def generate_content(self, *args, **kwargs): pass
-    models = MockModels()
-genai_mod.Client = lambda **kwargs: MockClient()
-google_mod.genai = genai_mod
-sys.modules["google"] = google_mod
-sys.modules["google.genai"] = genai_mod
 
 import time
 import concurrent.futures

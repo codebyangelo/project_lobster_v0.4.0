@@ -6,18 +6,7 @@ from unittest.mock import patch, MagicMock
 # Add root directory to python path
 
 # Safe imports to handle missing dependencies in local dev environments
-try:
-    from lobster.core import scan_packet, client, RUNTIME_CACHE, limiter
-except ImportError:
-    sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
-    import types
-    google_mod = types.ModuleType('google')
-    genai_mod = types.ModuleType('genai')
-    genai_mod.Client = lambda **kwargs: MagicMock()
-    google_mod.genai = genai_mod
-    sys.modules['google'] = google_mod
-    sys.modules['google.genai'] = genai_mod
-    from lobster.core import scan_packet, client, RUNTIME_CACHE, limiter
+from lobster.core import scan_packet, client, RUNTIME_CACHE, limiter
 
 class TestGeminiAPI(unittest.TestCase):
     
@@ -47,7 +36,7 @@ class TestGeminiAPI(unittest.TestCase):
         mock_response = MagicMock()
         
         # The AI decides to add conversational filler before the required format
-        mock_response.text = "Here is my analysis of the payload.\nREASONING: The payload appears completely standard and safe for execution."
+        mock_response.text = "Here is my analysis of the payload.\nVERDICT: ALLOW\nREASONING: The payload appears completely standard and safe for execution."
         mock_client.models.generate_content.return_value = mock_response
         
         packet = {"code_snippet": "another_novel_pattern()"}
@@ -73,8 +62,8 @@ class TestGeminiAPI(unittest.TestCase):
         
         # The AI should recognize the prompt injection attempt or at least block it due to suspicious nature.
         # It must NOT return CLEAN. If it returns CLEAN, the injection succeeded.
-        self.assertNotEqual(result["status"], "ALLOW", "CRITICAL FAILURE: Prompt Injection Succeeded!")
-        self.assertEqual(result["source"], "GEMINI_API")
+        self.assertNotEqual(result["status"], "ALLOW", f"CRITICAL FAILURE: Prompt Injection Succeeded! Result: {result}")
+        self.assertEqual(result["source"], "GEMINI_API", f"Expected GEMINI_API but got {result['source']}. Full result: {result}")
 
 if __name__ == '__main__':
     unittest.main()
