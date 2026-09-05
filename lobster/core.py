@@ -52,6 +52,8 @@ def load_threats():
 # Load threats on module import
 load_threats()
 
+import threading
+
 # --- RATE LIMITER (Token Bucket) ---
 class RateLimiter:
     def __init__(self, rate=60, per=60):
@@ -59,18 +61,20 @@ class RateLimiter:
         self.per = per
         self.tokens = rate
         self.last_check = time.time()
+        self.lock = threading.Lock()
     
     def allow(self):
-        current = time.time()
-        time_passed = current - self.last_check
-        self.last_check = current
-        self.tokens += time_passed * (self.rate / self.per)
-        if self.tokens > self.rate:
-            self.tokens = self.rate
-        if self.tokens < 1.0:
-            return False
-        self.tokens -= 1.0
-        return True
+        with self.lock:
+            current = time.time()
+            time_passed = current - self.last_check
+            self.last_check = current
+            self.tokens += time_passed * (self.rate / self.per)
+            if self.tokens > self.rate:
+                self.tokens = self.rate
+            if self.tokens < 1.0:
+                return False
+            self.tokens -= 1.0
+            return True
 
 # Initialize Global Rate Limiter
 # 5 requests per minute (Gemini Free Tier Quota)
