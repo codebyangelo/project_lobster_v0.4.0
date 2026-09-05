@@ -1,12 +1,4 @@
 import sys
-sys.modules["dotenv"] = type("dummy", (), {"load_dotenv": lambda: None})
-import types
-google_mod = types.ModuleType("google")
-genai_mod = types.ModuleType("genai")
-genai_mod.Client = lambda **kwargs: None
-google_mod.genai = genai_mod
-sys.modules["google"] = google_mod
-sys.modules["google.genai"] = genai_mod
 
 import unittest
 from unittest.mock import patch

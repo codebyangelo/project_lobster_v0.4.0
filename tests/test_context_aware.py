@@ -7,19 +7,7 @@ from unittest.mock import patch, MagicMock
 
 # We need to mock the google.genai and dotenv imports if they are not installed in the test environment,
 # just in case, but since we are unit testing the logic, we will definitely mock the API call itself.
-try:
-    from lobster.core import scan_packet
-except ImportError:
-    # If imports fail due to missing dotenv/google (like in our previous run), we apply the same safe mock
-    sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
-    import types
-    google_mod = types.ModuleType('google')
-    genai_mod = types.ModuleType('genai')
-    genai_mod.Client = lambda **kwargs: MagicMock()
-    google_mod.genai = genai_mod
-    sys.modules['google'] = google_mod
-    sys.modules['google.genai'] = genai_mod
-    from lobster.core import scan_packet
+from lobster.core import scan_packet
 
 class TestContextAwareDetection(unittest.TestCase):
     

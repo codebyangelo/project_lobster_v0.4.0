@@ -4,18 +4,7 @@ import sys
 from unittest.mock import patch, MagicMock
 
 
-try:
-    from lobster.core import scan_packet, RUNTIME_CACHE, limiter
-except ImportError:
-    sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
-    import types
-    google_mod = types.ModuleType('google')
-    genai_mod = types.ModuleType('genai')
-    genai_mod.Client = lambda **kwargs: MagicMock()
-    google_mod.genai = genai_mod
-    sys.modules['google'] = google_mod
-    sys.modules['google.genai'] = genai_mod
-    from lobster.core import scan_packet, RUNTIME_CACHE, limiter
+from lobster.core import scan_packet, client, RUNTIME_CACHE, limiter
 
 class TestCacheManagement(unittest.TestCase):
 
