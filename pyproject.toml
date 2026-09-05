@@ -23,6 +23,7 @@ classifiers = [
 
 [project.scripts]
 lobster = "lobster.cli:run"
+lobster-proxy = "lobster.mcp_proxy:main"
 
 [tool.setuptools]
 packages = ["lobster"]
