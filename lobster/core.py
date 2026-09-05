@@ -76,9 +76,9 @@ class RateLimiter:
 # 5 requests per minute (Gemini Free Tier Quota)
 limiter = RateLimiter(rate=5, per=60)
 
-def scan_packet(packet, context_history=None, use_llm=True):
+def scan_packet(packet, context_history=None):
     """
-    Hybrid T-Cell V5.0 (Optimized):
+    Phase 2 Security Contract:
     1. Iron Dome (Block Known Bad) - Tier 0
     2. Green Dome (Allow Known Good) - Tier 0.5
     3. The Vault (Static DB) - Tier 1
@@ -87,17 +87,17 @@ def scan_packet(packet, context_history=None, use_llm=True):
     """
     
     # Check for invalid packet
-    if packet is None:
+    if packet is None or not isinstance(packet, dict):
         return {
-            "status": "CLEAN",
-            "analysis": "Invalid packet: Received None.",
+            "status": "ERROR",
+            "analysis": "Invalid packet: Malformed payload.",
             "source": "ERROR"
         }
 
     # 1. PASS-THROUGH (Text Only)
     if not packet.get('code_snippet'):
         return {
-            "status": "CLEAN", 
+            "status": "ALLOW", 
             "analysis": "Text-only payload. No execution risk.",
             "source": "TEXT"
         }
@@ -105,16 +105,13 @@ def scan_packet(packet, context_history=None, use_llm=True):
     code = packet['code_snippet']
     normalized_code = code.strip()
     
-    
     # 0. IRON DOME (Local Heuristics - Tier 0)
-    # Effectively 0ms Latency. Blocks known high-risk commands instantly.
     heuristic_verdict = IronDome.scan(code)
     if heuristic_verdict:
         heuristic_verdict["source"] = "IRON_DOME"
         return heuristic_verdict
 
     # 0.5. GREEN DOME (Local Allowlist - Tier 0.5)
-    # Effectively 0ms Latency. Allows known safe patterns to save API tokens.
     green_verdict = IronDome.scan_allowlist(code)
     if green_verdict:
         green_verdict["source"] = "GREEN_DOME"
@@ -127,26 +124,25 @@ def scan_packet(packet, context_history=None, use_llm=True):
         return result
 
     # 2. RUNTIME CACHE (Dynamic DB)
-    # Only use cache if AI is active (otherwise we want the SKIPPED msg)
-    if use_llm and normalized_code in RUNTIME_CACHE:
+    if normalized_code in RUNTIME_CACHE:
         result = RUNTIME_CACHE[normalized_code].copy()
         result["source"] = "CACHE"
         return result
 
     # 3. LIVE API FALLBACK (The "Danger Zone")
-    # Only runs if you type something new manually.
     try:
-        if not use_llm:
-             return {"status": "CLEAN", "analysis": "⚠ SKIPPED: AI Sentinel Disabled. Payload executing without analysis.", "source": "MANUAL"}
-
         if not client:
-            return {"status": "CLEAN", "analysis": "Offline Mode: Unknown signature passed.", "source": "OFFLINE"}
+            return {
+                "status": "ERROR", 
+                "analysis": "FAIL-CLOSED: AI Sentinel offline (Missing API Key) and payload is UNKNOWN.", 
+                "source": "OFFLINE"
+            }
             
         # RATE LIMIT CHECK
         if not limiter.allow():
             return {
-                "status": "API_ERROR", 
-                "analysis": "RATE LIMIT EXCEEDED. Traffic throttled to prevent 503 errors.",
+                "status": "ERROR", 
+                "analysis": "FAIL-CLOSED: Rate Limit Exceeded. Traffic throttled to prevent 503 errors.",
                 "source": "RATE_LIMITER"
             }
 
@@ -185,28 +181,25 @@ def scan_packet(packet, context_history=None, use_llm=True):
             analysis = full_text.split("REASONING:")[1].strip()
             
         analysis_lower = analysis.lower()
-        # Expanded vocabulary for safety checks to reduce false positives
-        # FIX: "safe" matched "unsafe". Added boundary checks or exclusions.
         is_safe = False
-        safe_keywords = ["benign", "standard", "clean", "authorized"]
+        safe_keywords = ["benign", "standard", "clean", "authorized", "safe"]
         
-        if any(k in analysis_lower for k in safe_keywords):
-            is_safe = True
-        elif "safe" in analysis_lower and "unsafe" not in analysis_lower:
+        if any(k in analysis_lower for k in safe_keywords) and "unsafe" not in analysis_lower:
             is_safe = True
             
-        status = "CLEAN" if is_safe else "BLOCKED"
+        status = "ALLOW" if is_safe else "BLOCK"
         
         result = {"status": status, "analysis": analysis, "source": "GEMINI_API"}
         
         # CACHE IT!
-        # Next time we see this exact code, we won't ask the API.
         RUNTIME_CACHE[normalized_code] = result
         
         return result
 
     except Exception as e:
         # FAIL-SAFE: If API is unreachable, we must BLOCK unknown traffic.
-        # "Better safe than sorry" - Linus
-        # We return a special status so the UI knows it TRIED the API.
-        return {"status": "API_ERROR", "analysis": f"FAIL-SAFE ACTIVATED. API Error: {str(e)}", "source": "API_ERROR"}
+        return {
+            "status": "ERROR", 
+            "analysis": f"FAIL-CLOSED: API Outage/Error: {str(e)}", 
+            "source": "API_ERROR"
+        }

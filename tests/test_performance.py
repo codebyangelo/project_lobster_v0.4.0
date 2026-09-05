@@ -53,13 +53,13 @@ class TestPerformanceBenchmarks(unittest.TestCase):
     def test_vault_lookup_latency(self):
         # Add 10,000 dummy threats to simulate a large vault
         for i in range(10000):
-            KNOWN_THREATS[f"dummy_threat_{i}"] = {"status": "BLOCKED", "analysis": "Dummy"}
+            KNOWN_THREATS[f"dummy_threat_{i}"] = {"status": "BLOCK", "analysis": "Dummy"}
             
-        KNOWN_THREATS["performance_test_threat"] = {"status": "BLOCKED", "analysis": "Target"}
+        KNOWN_THREATS["performance_test_threat"] = {"status": "BLOCK", "analysis": "Target"}
         packet = {"code_snippet": "performance_test_threat"}
         
         start_time = time.perf_counter()
-        result = scan_packet(packet, use_llm=False)
+        result = scan_packet(packet)
         end_time = time.perf_counter()
         
         latency_ms = (end_time - start_time) * 1000
@@ -74,11 +74,11 @@ class TestPerformanceBenchmarks(unittest.TestCase):
 
     def test_cache_lookup_latency(self):
         # Inject target directly into Cache
-        RUNTIME_CACHE["performance_test_cache"] = {"status": "CLEAN", "analysis": "Target"}
+        RUNTIME_CACHE["performance_test_cache"] = {"status": "ALLOW", "analysis": "Target"}
         packet = {"code_snippet": "performance_test_cache"}
         
         start_time = time.perf_counter()
-        result = scan_packet(packet, use_llm=True)
+        result = scan_packet(packet)
         end_time = time.perf_counter()
         
         latency_ms = (end_time - start_time) * 1000

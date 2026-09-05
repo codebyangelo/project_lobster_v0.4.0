@@ -15,7 +15,7 @@ class TestIronDome(unittest.TestCase):
             with self.subTest(payload=payload):
                 result = IronDome.scan(payload)
                 self.assertIsNotNone(result, f"Failed to block RCE payload: {payload}")
-                self.assertEqual(result["status"], "BLOCKED")
+                self.assertEqual(result["status"], "BLOCK")
                 self.assertIn("CRITICAL_RCE", result["analysis"])
 
     def test_network_blocking(self):
@@ -33,7 +33,7 @@ class TestIronDome(unittest.TestCase):
             with self.subTest(payload=payload):
                 result = IronDome.scan(payload)
                 self.assertIsNotNone(result, f"Failed to block Network payload: {payload}")
-                self.assertEqual(result["status"], "BLOCKED")
+                self.assertEqual(result["status"], "BLOCK")
                 self.assertIn("CRITICAL_NET", result["analysis"])
 
     def test_obfuscation_blocking(self):
@@ -48,7 +48,7 @@ class TestIronDome(unittest.TestCase):
             with self.subTest(payload=payload):
                 result = IronDome.scan(payload)
                 self.assertIsNotNone(result, f"Failed to block Obfuscation payload: {payload}")
-                self.assertEqual(result["status"], "BLOCKED")
+                self.assertEqual(result["status"], "BLOCK")
                 self.assertIn("SUSPICIOUS_OBFUSCATION", result["analysis"])
 
     def test_clean_code_allowed(self):
@@ -78,7 +78,7 @@ class TestIronDome(unittest.TestCase):
             with self.subTest(payload=payload):
                 result = IronDome.scan_allowlist(payload)
                 self.assertIsNotNone(result, f"Failed to greenlight payload: {payload}")
-                self.assertEqual(result["status"], "CLEAN")
+                self.assertEqual(result["status"], "ALLOW")
                 self.assertIn("GREEN DOME", result["analysis"])
 
 if __name__ == '__main__':

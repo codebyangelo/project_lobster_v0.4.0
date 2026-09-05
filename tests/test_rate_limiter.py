@@ -84,7 +84,7 @@ class TestRateLimiter(unittest.TestCase):
         # We also need to ensure client is not None so it doesn't fail on OFFLINE
         # It's fine if client is None, wait... 
         # In core.py:
-        # if not client: return {"status": "CLEAN", "analysis": "Offline Mode...
+        # if not client: return {"status": "ALLOW", "analysis": "Offline Mode...
         # RATE LIMIT CHECK is after `if not client:`
         # So we need to mock client.
         pass
@@ -99,11 +99,11 @@ class TestRateLimiter(unittest.TestCase):
         limiter.last_check = time.time()
         
         packet = {"code_snippet": "novel_payload_for_api"}
-        result = scan_packet(packet, use_llm=True)
+        result = scan_packet(packet)
         
-        self.assertEqual(result["status"], "API_ERROR")
+        self.assertEqual(result["status"], "ERROR")
         self.assertEqual(result["source"], "RATE_LIMITER")
-        self.assertIn("RATE LIMIT EXCEEDED", result["analysis"])
+        self.assertIn("Rate Limit Exceeded", result["analysis"])
 
 if __name__ == '__main__':
     unittest.main()

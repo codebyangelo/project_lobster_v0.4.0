@@ -3,8 +3,6 @@ import os
 import sys
 from unittest.mock import patch
 
-# Add root directory to python path
-
 try:
     from lobster.core import scan_packet
 except ImportError:
@@ -25,47 +23,40 @@ class TestErrorHandling(unittest.TestCase):
         # Test: packet = {} (missing key)
         packet = {}
         result = scan_packet(packet)
-        self.assertEqual(result["status"], "CLEAN")
+        self.assertEqual(result["status"], "ALLOW")
         self.assertEqual(result["source"], "TEXT")
 
     def test_empty_code_snippet(self):
         # Test: packet = {"code_snippet": ""}
         packet = {"code_snippet": ""}
         result = scan_packet(packet)
-        self.assertEqual(result["status"], "CLEAN")
+        self.assertEqual(result["status"], "ALLOW")
         self.assertEqual(result["source"], "TEXT")
 
     def test_none_code_snippet(self):
         # Test: packet = {"code_snippet": None}
         packet = {"code_snippet": None}
         result = scan_packet(packet)
-        self.assertEqual(result["status"], "CLEAN")
+        self.assertEqual(result["status"], "ALLOW")
         self.assertEqual(result["source"], "TEXT")
 
     def test_none_packet(self):
         # Test: packet = None
         # Should gracefully return safe default rather than raising AttributeError
         result = scan_packet(None)
-        self.assertEqual(result["status"], "CLEAN")
-        self.assertEqual(result["analysis"], "Invalid packet: Received None.")
+        self.assertEqual(result["status"], "ERROR")
+        self.assertEqual(result["analysis"], "Invalid packet: Malformed payload.")
         self.assertEqual(result["source"], "ERROR")
 
     @patch('lobster.core.client', new=None)
     def test_offline_mode(self):
         # Test with client=None (simulating failed API initialization)
         packet = {"code_snippet": "novel_code_pattern_not_in_vault()"}
-        result = scan_packet(packet, use_llm=True)
-        self.assertEqual(result["status"], "CLEAN")
+        result = scan_packet(packet)
+        self.assertEqual(result["status"], "ERROR")
         self.assertEqual(result["source"], "OFFLINE")
-        self.assertIn("Offline Mode", result["analysis"])
+        self.assertIn("FAIL-CLOSED", result["analysis"])
 
-    def test_manual_mode_skipped(self):
-        # Test what happens if use_llm=False
-        packet = {"code_snippet": "novel_code_pattern_not_in_vault()"}
-        result = scan_packet(packet, use_llm=False)
-        self.assertEqual(result["status"], "CLEAN")
-        self.assertEqual(result["source"], "MANUAL")
-        self.assertIn("SKIPPED", result["analysis"])
 
 if __name__ == '__main__':
     unittest.main()

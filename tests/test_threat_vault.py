@@ -27,15 +27,15 @@ class TestThreatVault(unittest.TestCase):
     def test_load_threats_success(self):
         # Mock a valid threat database dictionary
         valid_json = json.dumps({
-            "bad_code_1": {"status": "BLOCKED", "analysis": "Signature match 1"},
-            "bad_code_2": {"status": "BLOCKED", "analysis": "Signature match 2"}
+            "bad_code_1": {"status": "BLOCK", "analysis": "Signature match 1"},
+            "bad_code_2": {"status": "BLOCK", "analysis": "Signature match 2"}
         })
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", mock_open(read_data=valid_json)):
                 load_threats()
                 import lobster.core
                 self.assertIn("bad_code_1", lobster.core.KNOWN_THREATS)
-                self.assertEqual(lobster.core.KNOWN_THREATS["bad_code_1"]["status"], "BLOCKED")
+                self.assertEqual(lobster.core.KNOWN_THREATS["bad_code_1"]["status"], "BLOCK")
 
     def test_load_threats_missing_file(self):
         # Simulate a missing file (os.path.exists returns False)
@@ -56,7 +56,7 @@ class TestThreatVault(unittest.TestCase):
         import lobster.core
         # Add a known threat to the module-level KNOWN_THREATS dictionary
         lobster.core.KNOWN_THREATS["exact_match_payload()"] = {
-            "status": "BLOCKED", 
+            "status": "BLOCK", 
             "analysis": "STATIC VAULT (Tier 1): Known malicious payload matched exact signature."
         }
         
@@ -64,8 +64,8 @@ class TestThreatVault(unittest.TestCase):
         packet = {"code_snippet": "   \n\t exact_match_payload() \n  "}
         
         # It should hit the vault because the engine strips whitespace
-        result = scan_packet(packet, use_llm=False)
-        self.assertEqual(result["status"], "BLOCKED")
+        result = scan_packet(packet)
+        self.assertEqual(result["status"], "BLOCK")
         self.assertEqual(result["source"], "VAULT")
 
 
