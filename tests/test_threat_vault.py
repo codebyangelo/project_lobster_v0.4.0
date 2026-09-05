@@ -4,10 +4,9 @@ import sys
 import json
 from unittest.mock import patch, mock_open
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from src.core import load_threats, scan_packet, KNOWN_THREATS
+    from lobster.core import load_threats, scan_packet, KNOWN_THREATS
 except ImportError:
     sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
     import types
@@ -17,13 +16,13 @@ except ImportError:
     google_mod.genai = genai_mod
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
-    from src.core import load_threats, scan_packet, KNOWN_THREATS
+    from lobster.core import load_threats, scan_packet, KNOWN_THREATS
 
 class TestThreatVault(unittest.TestCase):
 
     def setUp(self):
-        import src.core
-        src.core.KNOWN_THREATS.clear()
+        import lobster.core
+        lobster.core.KNOWN_THREATS.clear()
 
     def test_load_threats_success(self):
         # Mock a valid threat database dictionary
@@ -34,16 +33,16 @@ class TestThreatVault(unittest.TestCase):
         with patch("os.path.exists", return_value=True):
             with patch("builtins.open", mock_open(read_data=valid_json)):
                 load_threats()
-                import src.core
-                self.assertIn("bad_code_1", src.core.KNOWN_THREATS)
-                self.assertEqual(src.core.KNOWN_THREATS["bad_code_1"]["status"], "BLOCKED")
+                import lobster.core
+                self.assertIn("bad_code_1", lobster.core.KNOWN_THREATS)
+                self.assertEqual(lobster.core.KNOWN_THREATS["bad_code_1"]["status"], "BLOCKED")
 
     def test_load_threats_missing_file(self):
         # Simulate a missing file (os.path.exists returns False)
         with patch("os.path.exists", return_value=False):
             load_threats()
-            import src.core
-            self.assertEqual(len(src.core.KNOWN_THREATS), 0)
+            import lobster.core
+            self.assertEqual(len(lobster.core.KNOWN_THREATS), 0)
 
     def test_load_threats_corrupted_json(self):
         # Simulate a corrupted JSON file
@@ -54,9 +53,9 @@ class TestThreatVault(unittest.TestCase):
                     load_threats()
 
     def test_whitespace_normalization_in_lookup(self):
-        import src.core
+        import lobster.core
         # Add a known threat to the module-level KNOWN_THREATS dictionary
-        src.core.KNOWN_THREATS["exact_match_payload()"] = {
+        lobster.core.KNOWN_THREATS["exact_match_payload()"] = {
             "status": "BLOCKED", 
             "analysis": "STATIC VAULT (Tier 1): Known malicious payload matched exact signature."
         }

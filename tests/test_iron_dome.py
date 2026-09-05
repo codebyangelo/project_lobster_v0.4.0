@@ -1,5 +1,5 @@
 import unittest
-from src.iron_dome import IronDome
+from lobster.iron_dome import IronDome
 
 class TestIronDome(unittest.TestCase):
     def test_rce_blocking(self):

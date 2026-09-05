@@ -5,9 +5,8 @@ import os
 import sys
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.core import RateLimiter, scan_packet, limiter
+from lobster.core import RateLimiter, scan_packet, limiter
 
 class TestRateLimiter(unittest.TestCase):
     def setUp(self):
@@ -90,7 +89,7 @@ class TestRateLimiter(unittest.TestCase):
         # So we need to mock client.
         pass
 
-    @patch('src.core.client')
+    @patch('lobster.core.client')
     def test_scan_packet_rate_limit_exceeded(self, mock_client):
         # Ensure client is truthy so we get to rate limiter
         mock_client.__bool__.return_value = True 

@@ -32,9 +32,9 @@ from rich import box
 
 # --- IMPORTS ---
 try:
-    from src.core import scan_packet
+    from lobster.core import scan_packet
 except ImportError:
-    print("❌ CRITICAL ERROR: Could not import 'src.core'.")
+    print("❌ CRITICAL ERROR: Could not import 'lobster.core'.")
     sys.exit(1)
 
 # --- CONFIG ---

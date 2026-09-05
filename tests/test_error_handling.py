@@ -4,10 +4,9 @@ import sys
 from unittest.mock import patch
 
 # Add root directory to python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 try:
-    from src.core import scan_packet
+    from lobster.core import scan_packet
 except ImportError:
     # Fallback mock for missing dependencies
     sys.modules['dotenv'] = type('dummy', (), {'load_dotenv': lambda: None})
@@ -18,7 +17,7 @@ except ImportError:
     google_mod.genai = genai_mod
     sys.modules['google'] = google_mod
     sys.modules['google.genai'] = genai_mod
-    from src.core import scan_packet
+    from lobster.core import scan_packet
 
 class TestErrorHandling(unittest.TestCase):
 
@@ -51,7 +50,7 @@ class TestErrorHandling(unittest.TestCase):
         self.assertEqual(result["analysis"], "Invalid packet: Received None.")
         self.assertEqual(result["source"], "ERROR")
 
-    @patch('src.core.client', new=None)
+    @patch('lobster.core.client', new=None)
     def test_offline_mode(self):
         # Test with client=None (simulating failed API initialization)
         packet = {"code_snippet": "novel_code_pattern_not_in_vault()"}
