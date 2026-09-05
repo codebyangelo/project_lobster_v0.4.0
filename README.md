@@ -54,13 +54,23 @@ pip install .
 ```
 *(Dependencies like `google-genai` and `rich` are automatically handled)*
 
-### Running the Demo
-Since Project Lobster is now a standard Python package, it installs a global command line tool:
+### Running the Dashboard
+Since Project Lobster is now a standard Python package, it installs a global command line tool to launch the visual simulation:
 
 ```bash
-# Launch the Dashboard
 lobster
 ```
+
+### Securing an MCP Server (Proxy Mode)
+To secure a live agent using the Model Context Protocol (MCP), Lobster provides a `stdio` proxy wrapper. It sits between your agent and the target MCP tool, intercepting and evaluating JSON-RPC tool calls before they execute.
+
+Simply prepend `lobster-proxy` to your existing MCP server command:
+
+```bash
+lobster-proxy npx -y @modelcontextprotocol/server-filesystem /tmp
+```
+
+If the agent sends a malicious payload, Lobster intercepts it, drops the request, and returns an MCP Error directly to the agent. The downstream tool is entirely shielded.
 
 ### Controls
 | Key | Function |
