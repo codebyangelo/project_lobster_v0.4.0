@@ -123,15 +123,29 @@ def scan_packet(packet, context_history=None):
         
     # 1. THE VAULT LOOKUP (Static DB)
     if normalized_code in KNOWN_THREATS:
-        result = KNOWN_THREATS[normalized_code].copy()
-        result["source"] = "VAULT"
-        return result
+        vault_entry = KNOWN_THREATS[normalized_code]
+        if isinstance(vault_entry, dict) and "status" in vault_entry and "analysis" in vault_entry:
+            result = vault_entry.copy()
+            result["source"] = "VAULT"
+            return result
+        else:
+            # Threat DB corruption detected! We fail-closed by blocking.
+            return {
+                "status": "ERROR",
+                "analysis": "FAIL-CLOSED: Threat Vault database corruption detected for this signature.",
+                "source": "VAULT"
+            }
 
     # 2. RUNTIME CACHE (Dynamic DB)
     if normalized_code in RUNTIME_CACHE:
-        result = RUNTIME_CACHE[normalized_code].copy()
-        result["source"] = "CACHE"
-        return result
+        cached_result = RUNTIME_CACHE[normalized_code]
+        if isinstance(cached_result, dict) and "status" in cached_result and "analysis" in cached_result:
+            result = cached_result.copy()
+            result["source"] = "CACHE"
+            return result
+        else:
+            # Cache corruption detected! Clear the corrupted entry.
+            del RUNTIME_CACHE[normalized_code]
 
     # 3. LIVE API FALLBACK (The "Danger Zone")
     try:

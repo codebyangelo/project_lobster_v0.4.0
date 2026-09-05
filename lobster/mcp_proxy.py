@@ -40,9 +40,14 @@ def main():
         try:
             req = json.loads(line_str)
         except json.JSONDecodeError:
-            # If it's not valid JSON, we just pass it through blindly.
-            proc.stdin.write(line)
-            proc.stdin.flush()
+            # LOBSTER FIREWALL: Drop malformed JSON to protect downstream server from crash/overflow.
+            # Return standard JSON-RPC 2.0 Parse error.
+            error_resp = {
+                "jsonrpc": "2.0",
+                "error": {"code": -32700, "message": "Parse error"},
+                "id": None
+            }
+            print(json.dumps(error_resp), flush=True)
             continue
 
         # Intercept MCP "tools/call" requests
