@@ -35,8 +35,11 @@ COPY --from=builder /build/wheels /wheels
 COPY --from=builder /build/pyproject.toml /app/
 COPY --from=builder /build/lobster /app/lobster/
 
-# Install from wheels and clean up
-RUN pip install --no-cache /wheels/* && rm -rf /wheels
+# Install from wheels and clean up build tools (pip/ensurepip) to eliminate vendored CVEs
+RUN pip install --no-cache /wheels/* && \
+    rm -rf /wheels && \
+    pip uninstall -y pip && \
+    rm -rf /usr/local/lib/python3.11/ensurepip
 
 # Set ownership
 RUN chown -R lobster:lobster /app
