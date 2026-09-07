@@ -2,6 +2,7 @@
 ### "Hybrid-Tiered Agentic Immune System"
 
 [![CI: Python Test](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/test.yml/badge.svg)](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/test.yml)
+[![CI: Docker Build & Scan](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/docker.yml/badge.svg)](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/docker.yml)
 [![Iron Dome Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/iron_dome_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
 [![Vault Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/vault_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
 [![Cache Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/cache_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
