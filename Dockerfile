@@ -28,7 +28,6 @@ RUN groupadd -r lobster && useradd -r -g lobster lobster
 COPY --from=builder /build/wheels /wheels
 COPY --from=builder /build/pyproject.toml /app/
 COPY --from=builder /build/lobster /app/lobster/
-COPY --from=builder /build/tests /app/tests/
 
 # Install from wheels
 RUN pip install --no-cache /wheels/*
