@@ -38,6 +38,9 @@ def main():
     out_thread.start()
 
     try:
+        MAX_CONTEXT = 10
+        session_history = []
+        
         # Read incoming JSON-RPC requests from the Agent via stdin
         for line in sys.stdin:
             line_str = line.strip()
@@ -65,14 +68,19 @@ def main():
             # Example: {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "run_command", "arguments": {"command": "rm -rf /"}}}
             if isinstance(req, dict) and req.get("method") == "tools/call":
                 params = req.get("params", {})
-                args = params.get("arguments", {})
                 
-                # Serialize the tool arguments into a string payload for Lobster to scan
-                # We treat the entire argument block as the "code_snippet"
-                payload = json.dumps(args)
+                # Serialize the entire params block (including tool name and arguments)
+                # so the LLM understands the full intent of the MCP call.
+                payload = json.dumps(params)
                 
                 packet = {"code_snippet": payload}
-                verdict = scan_packet(packet, correlation_id=correlation_id)
+                verdict = scan_packet(packet, context_history=session_history, correlation_id=correlation_id)
+                
+                # Record action and resulting security status in history
+                history_packet = {"code_snippet": f"Payload: {payload}\nLobster Verdict: {verdict['status']}"}
+                session_history.append(history_packet)
+                if len(session_history) > MAX_CONTEXT:
+                    session_history.pop(0)
                 
                 if verdict["status"] != "ALLOW":
                     # LOBSTER INTERCEPTION!
