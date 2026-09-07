@@ -28,8 +28,8 @@ jobs:
           tags: project-lobster:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Ensure provenance is enabled to capture the environment
-          provenance: true
+          # Disable provenance to allow loading into the local Docker daemon
+          provenance: false
 
       - name: Inspect Final Image Filesystem (Forensics)
         run: |
