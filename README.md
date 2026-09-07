@@ -1,94 +1,147 @@
-# 🦞 Project Lobster v1.0.0-Alpha
-### "Hybrid-Tiered Agentic Immune System"
+<div align="center">
+<img src="docs/imgs/logo.png" width="200">
 
-[![CI: Python Test](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/test.yml/badge.svg)](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/test.yml)
-[![Iron Dome Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/iron_dome_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
-[![Vault Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/vault_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
-[![Cache Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/cache_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
+[![GitHub Release][release-img]][release]
+[![Test][test-img]][test]
+[![Go Report Card][go-report-img]][go-report]
+[![License: Apache-2.0][license-img]][license]
+[![GitHub Downloads][github-downloads-img]][release]
+![Docker Pulls][docker-pulls]
 
-**Engine:** Google Gemini 3 Flash Preview
+[📖 Documentation][docs]
+</div>
 
-**Interface:** Terminal User Interface (TUI) via `rich`
+Trivy ([pronunciation][pronunciation]) is a comprehensive and versatile security scanner.
+Trivy has *scanners* that look for security issues, and *targets* where it can find those issues.
 
-**Status:** Alpha - Feature complete, seeking production feedback
+Targets (what Trivy can scan):
 
----
+- Container Image
+- Filesystem
+- Git Repository (remote)
+- Virtual Machine Image
+- Kubernetes
 
-## 📖 The Vision
-As the internet evolves from a network of humans to a network of **Autonomous AI Agents**, traditional security tools (firewalls, antivirus) are becoming obsolete. Agents talk to agents using natural language and code, not just HTTP requests.
+Scanners (what Trivy can find there):
 
-**Project Lobster** is an "Immune System" for this new agentic web. It sits alongside your AI agent, monitoring input/output traffic only. It detects malicious prompts, jailbreaks, and dangerous code execution attempts *before* they reach your agent's core logic.
+- OS packages and software dependencies in use (SBOM)
+- Known vulnerabilities (CVEs)
+- IaC issues and misconfigurations
+- Sensitive information and secrets
+- Software licenses
 
----
+Trivy supports most popular programming languages, operating systems, and platforms. For a complete list, see the [Scanning Coverage] page.
 
-## 🚀 Key Features
+To learn more, go to the [Trivy homepage][homepage] for feature highlights, or to the [Documentation site][docs] for detailed information.
 
-### 1. Hybrid Defense Architecture
--   **Layer 0: Iron Dome/Green Dome (Local)**: Effectively zero-latency local Regex heuristics block known threats (rm -rf) and approve known-safe patterns (import math) instantly, before invoking the AI layer.
--   **Layer 1: The Vault (Cached Intelligence)**: A local database of previously analyzed threats prevents redundant API calls.
--   **Layer 2: AI Sentinel (Gemini 3 Flash Preview)**: The "Brain". Analyzes novel, complex threats using the reasoning capabilities of Gemini 3 Flash Preview.
+## Quick Start
 
-### 2. Efficiency & Sustainability
--   **Live Efficiency Monitor**: The dashboard tracks `API Calls` vs. `Local Blocks` in real-time.
--   **Token Bucket Rate Limiter**: Strictly enforces a **5 RPM** limit (Free Tier compliant) while maintaining 100% uptime via caching and heuristics.
--   **Cost Savings**: Demos how an enterprise-grade system scales without linear cost growth.
+### Get Trivy
 
-### 3. Context-Aware Security
--   **The "Killer Feature"**: Unlike simple firewalls, Lobster analyzes the *history* of the conversation.
--   **Demo Scenario**: It detects multi-step attacks (e.g., setting an environment variable in Packet A, then exfiltrating it in Packet B) that are benign in isolation but malicious in context.
+Trivy is available in most common distribution channels. The full list of installation options is available in the [Installation] page. Here are a few popular examples:
 
----
+- `brew install trivy`
+- `docker run aquasec/trivy`
+- Download binary from <https://github.com/aquasecurity/trivy/releases/latest/>
+- See [Installation] for more
 
-## ⚙️ Usage Guide
+Trivy is integrated with many popular platforms and applications. The complete list of integrations is available in the [Ecosystem] page. Here are a few popular examples:
 
-### prerequisites
--   Python 3.10+
--   Google Cloud Project with Gemini API enabled
--   `GEMINI_API_KEY` set in `.env`
+- [GitHub Actions](https://github.com/aquasecurity/trivy-action)
+- [Kubernetes operator](https://github.com/aquasecurity/trivy-operator)
+- [VS Code plugin](https://github.com/aquasecurity/trivy-vscode-extension)
+- See [Ecosystem] for more
 
-### Installation
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install .
-```
-*(Dependencies like `google-genai` and `rich` are automatically handled)*
+### Canary builds
+There are canary builds ([Docker Hub](https://hub.docker.com/r/aquasec/trivy/tags?page=1&name=canary), [GitHub](https://github.com/aquasecurity/trivy/pkgs/container/trivy/75776514?tag=canary), [ECR](https://gallery.ecr.aws/aquasecurity/trivy#canary) images and [binaries](https://github.com/aquasecurity/trivy/actions/workflows/canary.yaml)) generated with every push to the main branch.
 
-### Running the Dashboard
-Since Project Lobster is now a standard Python package, it installs a global command line tool to launch the visual simulation:
+Please be aware: canary builds might have critical bugs, so they are not recommended for use in production.
 
-```bash
-lobster
-```
-
-### Securing an MCP Server (Proxy Mode)
-To secure a live agent using the Model Context Protocol (MCP), Lobster provides a `stdio` proxy wrapper. It sits between your agent and the target MCP tool, intercepting and evaluating JSON-RPC tool calls before they execute.
-
-Simply prepend `lobster-proxy` to your existing MCP server command:
+### General usage
 
 ```bash
-lobster-proxy npx -y @modelcontextprotocol/server-filesystem /tmp
+trivy <target> [--scanners <scanner1,scanner2>] <subject>
 ```
 
-If the agent sends a malicious payload, Lobster intercepts it, drops the request, and returns an MCP Error directly to the agent. The downstream tool is entirely shielded.
+Examples:
 
-### Controls
-| Key | Function |
-| :--- | :--- |
-| **S** | **Start** the live simulation. |
-| **A** | **Toggle AI** (Watch the difference between Pattern Matching vs. Intelligence). |
-| **SPACE** | **Pause/Resume** the stream. |
-| **E** | **Export** a detailed forensic report (HTML + JSON). |
-| **Q** | **Quit**. |
+```bash
+trivy image python:3.4-alpine
+```
 
----
+<details>
+<summary>Result</summary>
 
-*Project Lobster - Securing the Agentic Web*
+https://github.com/user-attachments/assets/af1c11e7-d9c5-48af-8e05-cb34dfd6352a
 
-## Copyright 2026 Angelo Ayton
+</details>
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+```bash
+trivy fs --scanners vuln,secret,misconfig myproject/
+```
 
-     http://www.apache.org/licenses/LICENSE-2.0
+<details>
+<summary>Result</summary>
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+https://github.com/user-attachments/assets/6b3894b7-77c5-4ffc-ac94-ffe6648a30dc
+
+</details>
+
+```bash
+trivy k8s --report summary cluster
+```
+
+<details>
+<summary>Result</summary>
+
+![k8s summary](docs/imgs/trivy-k8s.png)
+
+</details>
+
+## FAQ
+
+### How to pronounce the name "Trivy"?
+
+`tri` is pronounced like **tri**gger, `vy` is pronounced like en**vy**.
+
+## Want more? Check out Aqua
+
+If you liked Trivy, you will love Aqua which builds on top of Trivy to provide even more enhanced capabilities for a complete security management offering.  
+You can find a high level comparison table specific to Trivy users [here](https://trivy.dev/docs/latest/commercial/compare/).
+In addition check out the <https://aquasec.com> website for more information about our products and services.
+If you'd like to contact Aqua or request a demo, please use this form: <https://www.aquasec.com/demo>
+
+## Community
+
+Trivy is an [Aqua Security][aquasec] open source project.  
+Learn about our open source work and portfolio [here][oss].  
+Contact us about any matter by opening a GitHub Discussion [here][discussions]
+
+Please ensure to abide by our [Code of Conduct][code-of-conduct] during all interactions.
+
+[test]: https://github.com/aquasecurity/trivy/actions/workflows/test.yaml
+[test-img]: https://github.com/aquasecurity/trivy/actions/workflows/test.yaml/badge.svg
+[go-report]: https://goreportcard.com/report/github.com/aquasecurity/trivy
+[go-report-img]: https://goreportcard.com/badge/github.com/aquasecurity/trivy
+[release]: https://github.com/aquasecurity/trivy/releases
+[release-img]: https://img.shields.io/github/release/aquasecurity/trivy.svg?logo=github
+[github-downloads-img]: https://img.shields.io/github/downloads/aquasecurity/trivy/total?logo=github
+[docker-pulls]: https://img.shields.io/docker/pulls/aquasec/trivy?logo=docker&label=docker%20pulls%20%2F%20trivy
+[license]: https://github.com/aquasecurity/trivy/blob/main/LICENSE
+[license-img]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
+[homepage]: https://trivy.dev
+[docs]: https://trivy.dev/docs/latest/
+[pronunciation]: #how-to-pronounce-the-name-trivy
+[code-of-conduct]: https://github.com/aquasecurity/community/blob/main/CODE_OF_CONDUCT.md
+
+[Installation]:https://trivy.dev/docs/latest/getting-started/installation/
+[Ecosystem]: https://trivy.dev/docs/latest/ecosystem/
+[Scanning Coverage]: https://trivy.dev/docs/latest/coverage/
+
+[alpine]: https://ariadne.space/2021/06/08/the-vulnerability-remediation-lifecycle-of-alpine-containers/
+[rego]: https://www.openpolicyagent.org/docs/latest/#rego
+[sigstore]: https://www.sigstore.dev/
+
+[aquasec]: https://aquasec.com
+[oss]: https://www.aquasec.com/products/open-source-projects/
+[discussions]: https://github.com/aquasecurity/trivy/discussions
