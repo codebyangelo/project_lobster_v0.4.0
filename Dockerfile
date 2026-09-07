@@ -11,13 +11,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Patch build tools to prevent compiling vulnerable wheels
-RUN pip install --no-cache-dir --upgrade pip setuptools "wheel>=0.46.2" "jaraco.context>=6.1.0"
+RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1" "wheel>=0.46.2" "jaraco.context>=6.1.0" "msgpack>=1.2.1"
 
 COPY pyproject.toml ./
 COPY lobster/ ./lobster/
 
 # Build wheel and explicitly constrain vulnerable transitive dependencies
-RUN pip wheel --no-cache-dir --wheel-dir /build/wheels . "wheel>=0.46.2" "jaraco.context>=6.1.0"
+RUN pip wheel --no-cache-dir --wheel-dir /build/wheels . "wheel>=0.46.2" "jaraco.context>=6.1.0" "setuptools>=78.1.1" "msgpack>=1.2.1"
 
 # Production Stage
 FROM python:3.11-slim
@@ -25,7 +25,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Patch base python packages for Trivy CVEs
-RUN pip install --no-cache-dir --upgrade pip setuptools "wheel>=0.46.2" "jaraco.context>=6.1.0"
+RUN pip install --no-cache-dir --upgrade pip "setuptools>=78.1.1" "wheel>=0.46.2" "jaraco.context>=6.1.0" "msgpack>=1.2.1"
 
 # Create a non-root user for security
 RUN groupadd -r lobster && useradd -r -g lobster lobster
