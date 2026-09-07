@@ -13,6 +13,10 @@ def forward_output(proc):
         sys.stdout.flush()
 
 def main():
+    if len(sys.argv) == 2 and sys.argv[1] == "--health":
+        print("Healthy")
+        sys.exit(0)
+        
     if len(sys.argv) < 2:
         print("Usage: lobster-proxy <command> [args...]", file=sys.stderr)
         sys.exit(1)
