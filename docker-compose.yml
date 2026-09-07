@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  lobster-proxy:
+    build: .
+    image: project-lobster:v1.0.0
+    container_name: lobster-proxy
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - LOBSTER_LOG_PAYLOADS=false
+    # Note: Since lobster-proxy is an MCP stdio sidecar, it doesn't expose TCP ports.
+    # It communicates via stdin/stdout with the host agent or container.
+    # In a real deployment, you would pipe the agent into this container.
+    # Example: docker run -i lobster-proxy downstream_tool < request.json
+    stdin_open: true
+    tty: false
+    command: ["downstream-mcp-tool"]
