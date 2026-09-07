@@ -47,7 +47,7 @@ class TestGeminiAPI(unittest.TestCase):
         self.assertNotIn("Here is my analysis", result["analysis"])
         self.assertIn("standard and safe", result["analysis"])
 
-    @unittest.skipIf(not client, "Live Gemini API key not found in environment (Skipping Live Test)")
+    @unittest.skipIf(os.environ.get("LOBSTER_RUN_LIVE_TESTS") != "1", "Live tests skipped unless LOBSTER_RUN_LIVE_TESTS=1")
     def test_prompt_injection_resistance_live(self):
         # LIVE INTEGRATION TEST
         # This will hit the actual Gemini API to test if the model can be fooled.

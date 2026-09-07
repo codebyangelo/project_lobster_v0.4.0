@@ -100,5 +100,28 @@ class TestMCPProxy(unittest.TestCase):
         self.assertEqual(resp.get("error", {}).get("code"), -32700)
         self.assertIsNone(resp.get("id"))
 
+    def test_503_prevents_downstream_execution(self):
+        # A payload that bypasses Iron/Green dome and Vault, forcing an LLM lookup.
+        # Since we use the mock_env, google.genai.Client.models.generate_content will throw a 503.
+        # This asserts Lobster returns ERROR, remains fail-closed, and prevents downstream execution.
+        req = {
+            "jsonrpc": "2.0",
+            "id": 99,
+            "method": "tools/call",
+            "params": {
+                "name": "unknown_tool",
+                "arguments": {"some_arg": "triggers_llm"}
+            }
+        }
+        resp = self.send_req(req)
+        self.assertIsNotNone(resp)
+        # Should return an error back to the agent
+        self.assertTrue(resp.get("result", {}).get("isError"))
+        text = resp["result"]["content"][0]["text"]
+        self.assertIn("LOBSTER SECURITY INTERCEPTION", text)
+        self.assertIn("ERROR", text)
+        self.assertIn("FAIL-CLOSED", text)
+        self.assertIn("503 Service Unavailable", text)
+
 if __name__ == '__main__':
     unittest.main()
