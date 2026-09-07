@@ -1,4 +1,4 @@
-# 🦞 Project Lobster v1.0.0-Alpha
+# 🦞 Project Lobster v1.0.0-Beta
 ### "Hybrid-Tiered Agentic Immune System"
 
 [![CI: Python Test](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/test.yml/badge.svg)](https://github.com/codebyangelo/project_lobster_v0.4.0/actions/workflows/test.yml)
@@ -11,7 +11,7 @@
 
 **Interface:** Terminal User Interface (TUI) via `rich`
 
-**Status:** Alpha - Feature complete, seeking production feedback
+**Status:** Beta - Architecture validated, entering production hardening
 
 ---
 
