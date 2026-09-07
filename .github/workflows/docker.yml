@@ -26,8 +26,6 @@ jobs:
           context: .
           load: true
           tags: project-lobster:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           # Disable provenance to allow loading into the local Docker daemon
           provenance: false
 
