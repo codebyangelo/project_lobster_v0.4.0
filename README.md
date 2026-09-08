@@ -7,7 +7,7 @@
 [![Vault Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/vault_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
 [![Cache Latency](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/codebyangelo/290c37849ba326c70233c878e2090b65/raw/cache_latency.json)](https://github.com/codebyangelo/project_lobster_v0.4.0)
 
-**Engine:** Google Gemini 3 Flash Preview
+**Engine:** Google Gemini 3.1 Flash-Lite
 
 **Interface:** Terminal User Interface (TUI) via `rich`
 
