@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "project-lobster"
-version = "0.4.0"
+version = "1.0.0b1"
 authors = [
   { name="Angelo Ayton" },
 ]
