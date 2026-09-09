@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # IMPORTANT: this permission is required for trusted publishing
+      contents: read   # Required for actions/checkout
     
     steps:
       - name: Checkout source
