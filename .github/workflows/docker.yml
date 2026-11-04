@@ -40,22 +40,23 @@ jobs:
         continue-on-error: true
 
       - name: Run Trivy (JSON Output)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'project-lobster:latest'
-          format: 'json'
-          output: 'trivy-full.json'
-          ignore-unfixed: false
-          vuln-type: 'os,library'
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            --quiet \
+            --format json \
+            --vuln-type os,library \
+            project-lobster:latest > trivy-full.json
 
       - name: Run Trivy (Table Output - Standard)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'project-lobster:latest'
-          format: 'table'
-          output: 'trivy-standard.txt'
-          ignore-unfixed: false
-          vuln-type: 'os,library'
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            --format table \
+            --vuln-type os,library \
+            project-lobster:latest | tee trivy-standard.txt
           
       - name: Verify Digests
         run: |
